@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Trackify.SubscriptionTracker.Application\Trackify.SubscriptionTracker.Application.csproj" />
     <ProjectReference Include="..\Trackify.SubscriptionTracker.Domain\Trackify.SubscriptionTracker.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Reposetories\" />
   </ItemGroup>
 
   <ItemGroup>
