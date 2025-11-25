@@ -9,18 +9,18 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
 {
     public class User
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
         [MaxLength(100)]
-        public string FullName { get; set; }
+        public string FullName { get; private set; }
         [EmailAddress, Required, MaxLength(100)]
-        public string Email { get; set; }
+        public string Email { get; private set; }
         [Required]
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; private set; }
         [Required, MaxLength(25)]
-        public string Role { get; set; } = "Subscriber";
-        public string? RefreshToken { get; set; }
-        public DateTime? RefreshTokenExpiryTime { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string Role { get; private set; } = "Subscriber";
+        public string? RefreshToken { get; private set; }
+        public DateTime? RefreshTokenExpiryTime { get; private set; }
+        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
         public User(string fullName, string email, string passwordHash, string role, string refreshToken, DateTime refreshTokenExpiryTime)
         {
