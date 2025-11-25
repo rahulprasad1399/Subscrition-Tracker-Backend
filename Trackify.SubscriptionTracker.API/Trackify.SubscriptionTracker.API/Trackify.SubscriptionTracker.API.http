@@ -1,0 +1,6 @@
+@Trackify.SubscriptionTracker.API_HostAddress = http://localhost:5121
+
+GET {{Trackify.SubscriptionTracker.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
