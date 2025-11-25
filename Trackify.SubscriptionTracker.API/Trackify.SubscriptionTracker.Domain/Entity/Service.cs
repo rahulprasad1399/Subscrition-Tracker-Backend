@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 
 namespace Trackify.SubscriptionTracker.Domain.Entity
 {
-    public class Services
+    public class Service
     {
         public int Id { get; private set; }
         [Required, MaxLength(25)]
         public string ServiceName { get; private set; }
         public int CategoryId { get; private set; }
         public int? CreatedByUserId { get; private set; }
-        public Categories Category { get; private set; }
+        public Category Category { get; private set; }
 
-        private Services()
+        private Service()
         {
         }
 
-        public Services(string serviceName, int categoryId, int? createdByUserId = null)
+        public Service(string serviceName, int categoryId, int? createdByUserId = null)
         {
             ServiceName = serviceName;
             CategoryId = categoryId;

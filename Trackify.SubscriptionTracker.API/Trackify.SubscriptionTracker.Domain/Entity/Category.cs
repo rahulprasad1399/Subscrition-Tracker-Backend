@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Trackify.SubscriptionTracker.Domain.Entity
 {
-    public class Categories
+    public class Category
     {
         public int Id { get; private set; }
         [Required, MaxLength(25)]
         public string CategoryName { get; private set; }
 
-        public Categories(string categoryName)
+        public Category(string categoryName)
         {
             CategoryName = categoryName;
         }
-        private Categories()
+        private Category()
         {
 
         }
