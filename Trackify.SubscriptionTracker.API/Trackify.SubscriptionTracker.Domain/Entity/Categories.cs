@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Trackify.SubscriptionTracker.Domain.Entity
+{
+    public class Categories
+    {
+        public int Id { get; private set; }
+        [Required, MaxLength(25)]
+        public string CategoryName { get; private set; }
+
+        public Categories(string categoryName)
+        {
+            CategoryName = categoryName;
+        }
+        private Categories()
+        {
+
+        }
+    }
+}
