@@ -17,6 +17,8 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<SubscriptionType> SubscriptionTypes { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

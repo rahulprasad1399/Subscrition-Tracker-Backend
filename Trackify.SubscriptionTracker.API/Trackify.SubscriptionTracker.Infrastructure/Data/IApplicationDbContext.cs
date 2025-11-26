@@ -14,6 +14,8 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data
         DbSet<Service> Services { get; set; }
         DbSet<SubscriptionType> SubscriptionTypes { get; set; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
+        DbSet<User> Users { get; set; }
+        DbSet<Subscription> Subscriptions { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
