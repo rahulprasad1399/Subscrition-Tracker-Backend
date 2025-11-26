@@ -17,7 +17,7 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         [Required]
         public string PasswordHash { get; private set; }
         [Required, MaxLength(25)]
-        public string Role { get; private set; } = "Subscriber";
+        public string Role { get; private set; }
         public string? RefreshToken { get; private set; }
         public DateTime? RefreshTokenExpiryTime { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;

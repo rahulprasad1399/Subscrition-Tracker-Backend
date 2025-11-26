@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using Trackify.SubscriptionTracker.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application")));
 
 var app = builder.Build();
 
