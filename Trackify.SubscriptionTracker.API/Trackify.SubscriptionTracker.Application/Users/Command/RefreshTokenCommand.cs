@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Trackify.SubscriptionTracker.Application.Users.Command
 {
-    internal class RefreshTokenCommand
+    public class RefreshTokenCommand
     {
+
     }
 }

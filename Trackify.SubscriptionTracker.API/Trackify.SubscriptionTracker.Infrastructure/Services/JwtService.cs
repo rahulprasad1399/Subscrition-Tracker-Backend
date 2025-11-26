@@ -47,5 +47,6 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Services
             rng.GetBytes(randomNumber);
             return Convert.ToBase64String(randomNumber);
         }
+
     }
 }
