@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trackify.SubscriptionTracker.Application.Interface;
+using Trackify.SubscriptionTracker.Domain.Entity;
 
 namespace Trackify.SubscriptionTracker.Application.Users.Command
 {
@@ -20,6 +22,14 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
 
     public class UserCommandHandler : IRequestHandler<CreateUserCommand, int>
     {
+        private readonly IGenericRepository<User> _genericRepository;
+        private readonly IAuthRepository _authRepository;
+
+        public UserCommandHandler(IGenericRepository<User> genericRepository, IAuthRepository authRepository)
+        {
+            _genericRepository = genericRepository;
+            _authRepository = authRepository;
+        }
         public Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             

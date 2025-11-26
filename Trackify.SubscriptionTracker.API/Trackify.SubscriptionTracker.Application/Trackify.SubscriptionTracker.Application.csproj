@@ -14,4 +14,8 @@
     <PackageReference Include="MediatR" Version="13.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Trackify.SubscriptionTracker.Domain\Trackify.SubscriptionTracker.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
