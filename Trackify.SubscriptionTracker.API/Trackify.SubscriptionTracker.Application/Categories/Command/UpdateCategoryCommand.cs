@@ -1,0 +1,33 @@
+﻿using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Trackify.SubscriptionTracker.Application.Interface;
+using Trackify.SubscriptionTracker.Domain.Entity;
+
+namespace Trackify.SubscriptionTracker.Application.Categories.Command
+{
+    public class UpdateCategoryCommand : IRequest<int>
+    {
+        public int Id { get; set; }
+        public string CategoryName { get; set; }
+    }
+
+    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, int>
+    {
+        private readonly IGenericRepository<Category> _repository;
+
+        public UpdateCategoryCommandHandler(IGenericRepository<Category> repository\)
+        {
+            _repository = repository;
+        }
+        public async Task<int> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+        {
+            if (request == null) return 0;
+            var category = new Category(request.CategoryName);
+            await _repository.UpdateAsync(category);
+        }
+    }
+}

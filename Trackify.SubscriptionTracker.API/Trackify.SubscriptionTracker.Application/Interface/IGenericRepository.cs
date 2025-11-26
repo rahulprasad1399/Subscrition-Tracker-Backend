@@ -14,5 +14,6 @@ namespace Trackify.SubscriptionTracker.Application.Interface
         Task UpdateAsync(T entity);
         Task DeleteAllAsync(T entity);
         Task DeleteAsync(int id);
+
     }
 }
