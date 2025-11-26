@@ -38,7 +38,7 @@ namespace Trackify.SubscriptionTracker.API.Controllers
             return Ok(result);
         }
         [HttpPut("{id}")]
-        private async Task<IActionResult> Update([FromRoute] int id,UpdateCategoryCommand command)
+        public async Task<IActionResult> Update([FromRoute] int id, UpdateCategoryCommand command )
         {
             command.Id = id;
             int result = await _mediator.Send(command);

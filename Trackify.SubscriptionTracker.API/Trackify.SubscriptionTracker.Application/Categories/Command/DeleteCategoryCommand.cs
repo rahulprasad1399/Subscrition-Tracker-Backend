@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trackify.SubscriptionTracker.Application.Exceptions;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
 
@@ -25,7 +26,10 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
         }
         public async Task<int> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            return await _repository.DeleteAsync(request.Id);
+            int response = await _repository.DeleteAsync(request.Id);
+            if (response == 0)
+                throw new NotFoundException(nameof(Category), request.Id);
+            return response;
         }
     }
     public class DeleteCategoryCommandValidator : AbstractValidator<DeleteCategoryCommand>

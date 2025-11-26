@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Exceptions;
 using Trackify.SubscriptionTracker.Application.Interface;
@@ -13,6 +14,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
 {
     public class UpdateCategoryCommand : IRequest<int>
     {
+        [JsonIgnore]
         public int Id { get; set; }
         public string CategoryName { get; set; }
     }

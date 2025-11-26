@@ -1,4 +1,6 @@
-﻿namespace Trackify.SubscriptionTracker.API.Middlewares
+﻿using Trackify.SubscriptionTracker.Application.Exceptions;
+
+namespace Trackify.SubscriptionTracker.API.Middlewares
 {
     public class ExceptionMiddleware
     {
@@ -24,6 +26,14 @@
 
                 var errors = ex.Errors.Select(e => new { field = e.PropertyName, message = e.ErrorMessage });
                 var response = new { Message = "Validation Failed", Errors = errors };
+
+                await context.Response.WriteAsJsonAsync(response);
+            }
+            catch (NotFoundException ex)
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                var response = new { Message = "Resource Not Found", Errors = ex.Message };
 
                 await context.Response.WriteAsJsonAsync(response);
             }

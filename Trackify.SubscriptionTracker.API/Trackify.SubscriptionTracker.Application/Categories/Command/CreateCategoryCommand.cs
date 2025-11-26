@@ -26,8 +26,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
         public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
             var category = new Category(request.CategoryName);
-            await _repository.AddAsync(category);
-            return category.Id;
+            return await _repository.AddAsync(category);
         }
     }
     public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
