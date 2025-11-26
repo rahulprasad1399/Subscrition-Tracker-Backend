@@ -22,14 +22,23 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         public DateTime? RefreshTokenExpiryTime { get; private set; }
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-        public User(string fullName, string email, string passwordHash, string role, string refreshToken, DateTime refreshTokenExpiryTime)
+        public User(string fullName, string email, string passwordHash, string role)
         {
             FullName = fullName;
             Email = email;
             PasswordHash = passwordHash;
             Role = role;
+        }
+
+        public void AddRefreshToken(string refreshToken, DateTime refreshTokenExpiryTime)
+        {
             RefreshToken = refreshToken;
             RefreshTokenExpiryTime = refreshTokenExpiryTime;
+        }
+
+        public void SetPaswordHash(string hash)
+        {
+            PasswordHash = hash;
         }
 
         private User() { }

@@ -20,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 });
 builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application")));
 

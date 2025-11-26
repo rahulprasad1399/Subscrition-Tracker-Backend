@@ -83,6 +83,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                         .HasColumnType("nvarchar(25)");
 
                     b.Property<decimal>("Cost")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("PurchaseDate")
@@ -166,6 +167,9 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                         .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

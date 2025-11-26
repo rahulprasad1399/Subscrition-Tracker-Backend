@@ -1,10 +1,5 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
 
@@ -30,17 +25,24 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
             _genericRepository = genericRepository;
             _authRepository = authRepository;
         }
-        public Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            
+            if(await _authRepository.CheckEmailExistAsync(request.Email))
+            {
+                throw new Exception("Email already in use");
+            }
+
+
+            User user = new User(request.FullName, request.Email, passwordHash : null, role : "Subscriber" );
+            var hashedPassword = _authRepository.HashPassword(user, request.Password);
+
+            user.SetPaswordHash(hashedPassword);
+
+            await _genericRepository.AddAsync(user);
+
+            return user.Id;
+
         }
     }
 }
 
-
-//public string PasswordHash { get; private set; }
-//[Required, MaxLength(25)]
-//public string Role { get; private set; }
-//public string? RefreshToken { get; private set; }
-//public DateTime? RefreshTokenExpiryTime { get; private set; }
-//public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
