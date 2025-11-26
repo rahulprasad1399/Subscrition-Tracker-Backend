@@ -10,10 +10,10 @@ namespace Trackify.SubscriptionTracker.Application.Interface
     {
         Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
-        Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAllAsync(T entity);
-        Task DeleteAsync(int id);
-
+        Task<int> AddAsync(T entity);
+        Task<int> UpdateAsync(T entity);
+        Task<int> DeleteAllAsync(T entity);
+        Task<int> DeleteAsync(int id);
+        Task<int> SaveChangesAsync();
     }
 }

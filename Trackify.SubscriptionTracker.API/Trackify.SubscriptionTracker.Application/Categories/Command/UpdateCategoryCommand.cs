@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trackify.SubscriptionTracker.Application.Exceptions;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
 
@@ -19,15 +20,23 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
     {
         private readonly IGenericRepository<Category> _repository;
 
-        public UpdateCategoryCommandHandler(IGenericRepository<Category> repository\)
+        public UpdateCategoryCommandHandler(IGenericRepository<Category> repository)
         {
             _repository = repository;
         }
         public async Task<int> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
-            if (request == null) return 0;
-            var category = new Category(request.CategoryName);
-            await _repository.UpdateAsync(category);
+            var category = await _repository.GetByIdAsync(request.Id);
+
+            if (category == null)
+            {
+                throw new NotFoundException(nameof(Category), request.Id);
+            }
+
+            category.Update(request.CategoryName);
+
+            return await _repository.SaveChangesAsync();
+
         }
     }
 }

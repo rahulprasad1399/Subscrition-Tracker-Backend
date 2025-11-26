@@ -32,8 +32,8 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
     }
     public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
     {
-        private readonly ICatergoryRepository _repository;
-        public CreateCategoryCommandValidator(ICatergoryRepository repository)
+        private readonly ICategoryRepository _repository;
+        public CreateCategoryCommandValidator(ICategoryRepository repository)
         {
             _repository = repository;
 

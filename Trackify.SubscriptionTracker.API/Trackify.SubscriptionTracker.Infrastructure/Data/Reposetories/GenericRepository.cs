@@ -18,27 +18,27 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
             _dbSet = _context.Set<T>();
 
         }
-        public async Task AddAsync(T entity)
+        public async Task<int> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
         
 
-        public async Task DeleteAllAsync(T entity)
+        public async Task<int> DeleteAllAsync(T entity)
         {
             _dbSet.RemoveRange(entity);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<int> DeleteAsync(int id)
         {
             var entity =await _dbSet.FindAsync(id);
-            if (entity == null) return;
+            if (entity == null) return 0;
 
             _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -51,11 +51,14 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task UpdateAsync( T entity)
+        public async Task<int> UpdateAsync(T entity)
         {
-
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
+        }
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
     }
 }

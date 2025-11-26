@@ -17,9 +17,17 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         {
             CategoryName = categoryName;
         }
+
         private Category()
         {
 
+        }
+        public void Update(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+                throw new ArgumentException("Name cannot be empty");
+
+            CategoryName = newName;
         }
     }
 }
