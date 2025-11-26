@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,19 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
 
             return await _repository.SaveChangesAsync();
 
+        }
+    }
+    public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCommand>
+    {
+        private readonly IGenericRepository<Category> _repository;
+        public UpdateCategoryCommandValidator(IGenericRepository<Category> repository)
+        {
+            _repository= repository;
+
+            RuleFor(x => x.Id)
+                .GreaterThan(0).WithMessage("Missing category id");
+            RuleFor(x => x.CategoryName)
+                .NotEmpty().WithMessage("Category name is missing");
         }
     }
 }
