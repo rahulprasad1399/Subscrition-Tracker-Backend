@@ -11,7 +11,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
         private readonly IApplicationDbContext _context;
-        public CategoryRepository(IApplicationDbContext context)
+        public CategoryRepository(IApplicationDbContext context) : base(context)
         {
             _context = context;
         }
