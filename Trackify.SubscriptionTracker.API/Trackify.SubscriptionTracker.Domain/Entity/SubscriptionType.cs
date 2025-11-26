@@ -20,6 +20,10 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
             CreatedByUserId = createdByUserId;
         }
 
+        public void UpdateTypeName(string typeName)
+        {
+            TypeName = typeName;
+        }
         private SubscriptionType() { }
     }
 }

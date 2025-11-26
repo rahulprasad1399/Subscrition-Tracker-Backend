@@ -52,7 +52,8 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
             RuleFor(x => x.Id)
                 .GreaterThan(0).WithMessage("Missing category id");
             RuleFor(x => x.CategoryName)
-                .NotEmpty().WithMessage("Category name is missing");
+                .NotEmpty().WithMessage("Category name is required")
+                .MaximumLength(25).WithMessage("Category name must be less than 25 charecters");
         }
     }
 }
