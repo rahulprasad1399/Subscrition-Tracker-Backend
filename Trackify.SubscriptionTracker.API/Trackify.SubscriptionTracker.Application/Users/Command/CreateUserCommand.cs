@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using System.ComponentModel.DataAnnotations;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
 

@@ -36,6 +36,12 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
             RefreshTokenExpiryTime = refreshTokenExpiryTime;
         }
 
+        public void UpdateUser(string fullName, string email)
+        {
+            FullName = fullName;
+            Email = email;
+        }
+
         public void SetPaswordHash(string hash)
         {
             PasswordHash = hash;
