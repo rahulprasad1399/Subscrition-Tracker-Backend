@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Trackify.SubscriptionTracker.Application.Interface;
+using Trackify.SubscriptionTracker.Domain.Entity;
 using Trackify.SubscriptionTracker.Infrastructure.Data;
+using Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application")));
 
