@@ -24,6 +24,8 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
             await _context.SaveChangesAsync();
         }
 
+        
+
         public async Task DeleteAllAsync(T entity)
         {
             _dbSet.RemoveRange(entity);
@@ -49,8 +51,9 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task UpdateAsync( T entity)
         {
+
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
         }
