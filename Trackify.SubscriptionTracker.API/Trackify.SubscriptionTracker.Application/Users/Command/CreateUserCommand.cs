@@ -1,10 +1,6 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
+﻿using FluentValidation;
+using MediatR;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
 
@@ -12,35 +8,51 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
 {
     public class CreateUserCommand : IRequest<int>
     {
-        [MaxLength(100)]
         public string FullName { get; set; }
-        [EmailAddress, Required, MaxLength(100)]
         public string Email { get; set; }
-        [Required]
-        public string Password { get; set; }    
+        public string Password { get; set; }
     }
 
-    public class UserCommandHandler : IRequestHandler<CreateUserCommand, int>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, int>
     {
         private readonly IGenericRepository<User> _genericRepository;
         private readonly IAuthRepository _authRepository;
 
-        public UserCommandHandler(IGenericRepository<User> genericRepository, IAuthRepository authRepository)
+        public CreateUserCommandHandler(IGenericRepository<User> genericRepository, IAuthRepository authRepository)
         {
             _genericRepository = genericRepository;
             _authRepository = authRepository;
         }
-        public Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            
+            if (await _authRepository.CheckEmailExistAsync(request.Email))
+            {
+                throw new Exception("Email already in use");
+            }
+
+
+            User user = new User(request.FullName, request.Email, passwordHash: null, role: "Subscriber");
+            var hashedPassword = _authRepository.HashPassword(user, request.Password);
+
+            user.SetPaswordHash(hashedPassword);
+
+            await _genericRepository.AddAsync(user);
+
+            return user.Id;
+
+        }
+    }
+
+    public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+    {
+        public CreateUserCommandValidator(IAuthRepository authRepository)
+        {
+            RuleFor(x => x.FullName).NotEmpty().WithMessage("FullName is Required").MaximumLength(100);
+            RuleFor(x => x.Email).NotEmpty().WithMessage("Email is Required")
+                .EmailAddress().WithMessage("Invalid Email Format")
+                .MustAsync(async (email, cancellation) => !await authRepository.CheckEmailExistAsync(email)).WithMessage("Email already in use");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is Required");
         }
     }
 }
 
-
-//public string PasswordHash { get; private set; }
-//[Required, MaxLength(25)]
-//public string Role { get; private set; }
-//public string? RefreshToken { get; private set; }
-//public DateTime? RefreshTokenExpiryTime { get; private set; }
-//public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;

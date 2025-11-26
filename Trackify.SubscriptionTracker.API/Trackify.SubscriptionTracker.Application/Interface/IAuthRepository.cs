@@ -13,9 +13,8 @@ namespace Trackify.SubscriptionTracker.Application.Interface
         bool VerifyPassword(User user, string password);
         Task SaveRefreshTokenAsync(User user, string refreshToken);
         Task<User> GetByRefreshTokenAsync(string refreshToken);
-        Task SaveChangesAsync();
 
         Task<bool> CheckEmailExistAsync(string email);
-        string HashPassword(string password);
+        string HashPassword(User user, string password);
     }
 }

@@ -23,6 +23,12 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Subscription>().Property(s => s.Cost).HasPrecision(18, 2);
+
+            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+
+            modelBuilder.Entity<User>().Property(u => u.Email).HasMaxLength(100);
+
         }
     }
 }

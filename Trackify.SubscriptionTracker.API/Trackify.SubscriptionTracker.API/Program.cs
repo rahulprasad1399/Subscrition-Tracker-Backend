@@ -1,3 +1,5 @@
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Trackify.SubscriptionTracker.Application.Interface;
@@ -22,7 +24,13 @@ builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application")));
+builder.Services.AddValidatorsFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application"));
+
+builder.Services.AddMediatR(x =>
+{
+    x.RegisterServicesFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application"));
+    x.AddBehavior(typeof(IPipelineBehavior<,>), typeof(Trackify.SubscriptionTracker.Application.Behaviors.ValidationBehavior<,>));
+});
 
 var app = builder.Build();
 
