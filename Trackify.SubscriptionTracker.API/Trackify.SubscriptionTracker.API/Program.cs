@@ -1,3 +1,5 @@
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Trackify.SubscriptionTracker.Application.Interface;
@@ -19,10 +21,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<ICatergoryRepository, CatergoryRepository>();
 
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application")));
+builder.Services.AddValidatorsFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application"));
+
+builder.Services.AddMediatR(x =>
+{
+    x.RegisterServicesFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application"));
+    x.AddBehavior(typeof(IPipelineBehavior<,>), typeof(Trackify.SubscriptionTracker.Application.Behaviors.ValidationBehavior<,>));
+});
 
 var app = builder.Build();
 

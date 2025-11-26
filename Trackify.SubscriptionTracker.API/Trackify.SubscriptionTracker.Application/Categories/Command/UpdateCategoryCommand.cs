@@ -19,7 +19,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
     {
         private readonly IGenericRepository<Category> _repository;
 
-        public UpdateCategoryCommandHandler(IGenericRepository<Category> repository\)
+        public UpdateCategoryCommandHandler(IGenericRepository<Category> repository)
         {
             _repository = repository;
         }
@@ -28,6 +28,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
             if (request == null) return 0;
             var category = new Category(request.CategoryName);
             await _repository.UpdateAsync(category);
+            return 1;
         }
     }
 }
