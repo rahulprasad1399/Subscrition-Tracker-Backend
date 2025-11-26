@@ -25,11 +25,6 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
         }
         public async Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            if (await _authRepository.CheckEmailExistAsync(request.Email))
-            {
-                throw new Exception("Email already in use");
-            }
-
 
             User user = new User(request.FullName, request.Email, passwordHash: null, role: "Subscriber");
             var hashedPassword = _authRepository.HashPassword(user, request.Password);

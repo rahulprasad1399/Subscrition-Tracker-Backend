@@ -18,13 +18,9 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterUser(CreateUserCommand command)
         {
-            var newUser = await _mediator.Send(command);
+            var userId = await _mediator.Send(command);
 
-            if (newUser != null)
-            {
-                return BadRequest();
-            }
-            return Ok();    
+            return Ok(new { Id = userId, Message = "User created successfully" });
         }
     }
 }
