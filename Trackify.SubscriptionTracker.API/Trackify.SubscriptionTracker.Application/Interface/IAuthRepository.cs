@@ -16,5 +16,6 @@ namespace Trackify.SubscriptionTracker.Application.Interface
 
         Task<bool> CheckEmailExistAsync(string email);
         string HashPassword(User user, string password);
+        Task<User> ValidateRefreshTokenAsync(string refreshToken);
     }
 }

@@ -36,8 +36,14 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
         public async Task SaveRefreshTokenAsync(User user, string refreshToken)
         {
 
-            user.AddRefreshToken(refreshToken, DateTime.UtcNow.AddDays(7));
+            user.AddRefreshToken(refreshToken, DateTime.UtcNow.AddMinutes(10));
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<User> ValidateRefreshTokenAsync(string refreshToken)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync((user) => user.RefreshToken == refreshToken && user.RefreshTokenExpiryTime > DateTime.UtcNow);
+            return user;
         }
 
         public bool VerifyPassword(User user, string password)
@@ -46,5 +52,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
             var result = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
             return result == PasswordVerificationResult.Success;
         }
+
+
     }
 }
