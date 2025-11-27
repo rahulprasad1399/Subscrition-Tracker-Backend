@@ -20,6 +20,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Services
 
             var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Role, role),
                 new Claim("UserId", userId.ToString())
@@ -32,7 +33,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Services
                 issuer: _configuration.GetValue<string>("AppSettings:Issuer"),
                 audience: _configuration.GetValue<string>("AppSettings:Audience"),
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(15),
+                expires: DateTime.UtcNow.AddMinutes(5),
                 signingCredentials: cred
                 );
 

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Trackify.SubscriptionTracker.Application.Users.Command;
 using Trackify.SubscriptionTracker.Application.Users.Dto;
@@ -65,6 +66,32 @@ namespace Trackify.SubscriptionTracker.API.Controllers
 
             await _mediator.Send(command);
             return Ok(new { message = "User deleted successfully" });
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(RefreshTokenCommand refreshTokenCommand)
+        {
+            var response = await _mediator.Send(refreshTokenCommand);
+            if (response == null)
+            {
+                return BadRequest(new { message = "failed to refresh token" });
+            }
+            return Ok(response);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("validate")]
+        public IActionResult Validate()
+        {
+            return Ok(new { authenticated = true });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            LogoutCommand command = new LogoutCommand();
+            var logoutResponse = await _mediator.Send(command);
+            return Ok(new { message = logoutResponse });
         }
     }
 }

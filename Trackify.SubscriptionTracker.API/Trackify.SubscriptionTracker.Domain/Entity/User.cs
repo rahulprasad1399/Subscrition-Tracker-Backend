@@ -30,7 +30,7 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
             Role = role;
         }
 
-        public void AddRefreshToken(string refreshToken, DateTime refreshTokenExpiryTime)
+        public void AddRefreshToken(string? refreshToken, DateTime? refreshTokenExpiryTime)
         {
             RefreshToken = refreshToken;
             RefreshTokenExpiryTime = refreshTokenExpiryTime;
