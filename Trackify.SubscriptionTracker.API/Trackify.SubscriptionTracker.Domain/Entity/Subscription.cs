@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,25 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
             PurchaseDate = purchaseDate;
             RenewalDate = renewalDate;
             Status = status;
+        }
+
+        public void UpdateSubscription(int serviceId, int subscriptionTypeId, decimal cost, int billingFrequency,
+            string billingPeriodUnit, DateTime purchaseDate, DateTime renewalDate, ActiveStatus activeStatus)
+        {
+            ServiceId = serviceId;
+            SubscriptionTypeId = subscriptionTypeId;
+            Cost = cost;
+            BillingFrequency = billingFrequency;
+            BillingPeriodUnit = billingPeriodUnit;
+            PurchaseDate = purchaseDate;
+            RenewalDate = renewalDate;
+            Status = activeStatus;
+
+        }
+
+        public void UpdateStatus(ActiveStatus activeStatus)
+        {
+            Status = activeStatus;
         }
 
         public enum ActiveStatus

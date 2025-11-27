@@ -51,8 +51,10 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByUserId([FromRoute] int id)
         {
-            GetByIdUserQuery getByIdUserQuery = new GetByIdUserQuery();
-            getByIdUserQuery.Id = id;
+            GetByIdUserQuery getByIdUserQuery = new()
+            {
+                Id = id
+            };
 
             GetUserDto user = await _mediator.Send(getByIdUserQuery);
             return Ok(user);
