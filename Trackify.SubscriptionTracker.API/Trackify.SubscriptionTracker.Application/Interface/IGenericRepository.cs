@@ -8,12 +8,13 @@ namespace Trackify.SubscriptionTracker.Application.Interface
 {
     public interface IGenericRepository<T> where T : class
     {
-        Task<T> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<int> AddAsync(T entity);
-        Task<int> UpdateAsync(T entity);
-        Task<int> DeleteAllAsync(T entity);
-        Task<int> DeleteAsync(int id);
-        Task<int> SaveChangesAsync();
+        Task<T> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<int> AddAsync(T entity,CancellationToken cancellationToken = default);
+        Task<int> UpdateAsync(T entity, CancellationToken cancellationToken = default);
+        Task<int> DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
+        Task<int> DeleteAsync(int id, CancellationToken cancellationToken = default);
+        Task<bool> ExistsAsync(int id, CancellationToken cancellationToken = default);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

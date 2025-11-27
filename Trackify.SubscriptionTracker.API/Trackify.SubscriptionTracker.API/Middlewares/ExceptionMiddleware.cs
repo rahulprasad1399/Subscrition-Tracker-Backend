@@ -37,6 +37,14 @@ namespace Trackify.SubscriptionTracker.API.Middlewares
 
                 await context.Response.WriteAsJsonAsync(response);
             }
+            catch (ForbiddenAccessException ex)
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                var response = new { Message = "Access Denied", Details = ex.Message };
+
+                await context.Response.WriteAsJsonAsync(response);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
