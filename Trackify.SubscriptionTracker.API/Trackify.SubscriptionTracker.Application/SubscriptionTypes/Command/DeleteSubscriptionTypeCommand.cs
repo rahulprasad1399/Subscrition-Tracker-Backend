@@ -47,8 +47,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
                 .GreaterThan(0).WithMessage("Subscrption type id is required")
                 .MustAsync(async (subscriptionId, cancellation) =>
                 {
-                    var subscriptionType = await _repository.GetByIdAsync(subscriptionId);
-                    return subscriptionType != null;
+                    return await _repository.ExistsAsync(subscriptionId, cancellation);
                 }).WithMessage("Subscription Type doesn't exist");
         }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,6 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data
         DbSet<Subscription> Subscriptions { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-
+        EntityEntry<T> Entry<T>(T entity) where T : class;
     }
 }

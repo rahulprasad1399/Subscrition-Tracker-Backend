@@ -34,9 +34,13 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
             {
                 throw new NotFoundException(nameof(SubscriptionType),request.Id);
             }
+            if (subscriptionType.CreatedByUserId != request.CreatedByUserId)
+            {
+                throw new ForbiddenAccessException("You are not authorized to modify this subscription.");
+            }
 
             subscriptionType.UpdateTypeName(request.TypeName);
-            return await _repository.SaveChangesAsync();
+            return await _repository.SaveChangesAsync();    
 
         }
     }
@@ -47,6 +51,8 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
             RuleFor(x => x.TypeName)
                 .NotEmpty().WithMessage("Subscrption type name is required")
                 .MaximumLength(25).WithMessage("Subscrption type name must be less than 25 charecters");
+            RuleFor(x => x.CreatedByUserId)
+                .GreaterThan(0).WithMessage("User Id is required");
         }
     }
 }

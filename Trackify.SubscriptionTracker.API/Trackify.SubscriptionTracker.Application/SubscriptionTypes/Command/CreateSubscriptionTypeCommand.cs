@@ -28,7 +28,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
         public async Task<int> Handle(CreateSubscriptionTypeCommand request, CancellationToken cancellationToken)
         {
             SubscriptionType subscriptionType = new SubscriptionType(request.TypeName,request.CreatedByUserId);
-            await _repository.AddAsync(subscriptionType);
+            await _repository.AddAsync(subscriptionType,cancellationToken);
             return subscriptionType.Id;
         }
     }
@@ -47,8 +47,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
                 .GreaterThan(0).WithMessage("User Id is required")
                 .MustAsync(async (userId, cancellation) =>
                 {
-                    var user = await _repository.GetByIdAsync(userId);
-                    return user != null;
+                    return await _repository.ExistsAsync(userId, cancellation);
                 }).WithMessage("User doesn't exist");
         }
     }
