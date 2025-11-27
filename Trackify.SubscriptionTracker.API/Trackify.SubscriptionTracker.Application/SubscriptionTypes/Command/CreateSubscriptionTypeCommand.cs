@@ -27,7 +27,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
         }
         public async Task<int> Handle(CreateSubscriptionTypeCommand request, CancellationToken cancellationToken)
         {
-            SubscriptionType subscriptionType = new SubscriptionType(request.TypeName,request.CreatedByUserId);
+            SubscriptionType subscriptionType = new(request.TypeName,request.CreatedByUserId);
             await _repository.AddAsync(subscriptionType,cancellationToken);
             return subscriptionType.Id;
         }

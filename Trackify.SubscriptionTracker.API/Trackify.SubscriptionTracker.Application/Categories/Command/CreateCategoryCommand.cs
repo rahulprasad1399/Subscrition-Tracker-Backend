@@ -25,8 +25,8 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
         }
         public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-            var category = new Category(request.CategoryName);
-            await _repository.AddAsync(category);
+            Category category = new(request.CategoryName);
+            await _repository.AddAsync(category,cancellationToken);
             return category.Id;
         }
     }
@@ -46,8 +46,6 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
                     var existing = await _repository.IsNameUniqueAsync(name);
                     return !existing;
                 }).WithMessage("Category already exists");
-
         }
     }
-
 }

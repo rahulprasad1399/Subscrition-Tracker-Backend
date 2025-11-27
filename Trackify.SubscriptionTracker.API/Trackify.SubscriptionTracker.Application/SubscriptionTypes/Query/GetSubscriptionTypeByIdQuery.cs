@@ -5,18 +5,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Trackify.SubscriptionTracker.Application.Dtos;
 using Trackify.SubscriptionTracker.Application.Exceptions;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
 
 namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Query
 {
-    public class GetSubscriptionTypeByIdQuery : IRequest<SubscriptionType>
+    public class GetSubscriptionTypeByIdQuery : IRequest<SubscriptionTypeDto>
     {
         public int Id { get; set; }
     }
 
-    public class GetSubscriptionTypeByIdQueryHandler : IRequestHandler<GetSubscriptionTypeByIdQuery, SubscriptionType>
+    public class GetSubscriptionTypeByIdQueryHandler : IRequestHandler<GetSubscriptionTypeByIdQuery, SubscriptionTypeDto>
     {
         private readonly IGenericRepository<SubscriptionType> _repository;
 
@@ -25,12 +26,18 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Query
             _repository = repository;
         }
 
-        public async Task<SubscriptionType> Handle(GetSubscriptionTypeByIdQuery request, CancellationToken cancellationToken)
+        public async Task<SubscriptionTypeDto> Handle(GetSubscriptionTypeByIdQuery request, CancellationToken cancellationToken)
         {
-            var subscriptionType = await _repository.GetByIdAsync(request.Id);
+            SubscriptionType subscriptionType = await _repository.GetByIdAsync(request.Id,cancellationToken);
             if (subscriptionType == null)
                 throw new NotFoundException(nameof(SubscriptionType), request.Id);
-            return subscriptionType;
+            SubscriptionTypeDto subscriptionTypeDto = new()
+            {
+                Id = subscriptionType.Id,
+                TypeName = subscriptionType.TypeName,
+                CreatedByUserId = subscriptionType.CreatedByUserId,
+            };
+            return subscriptionTypeDto;
         }
     }
 

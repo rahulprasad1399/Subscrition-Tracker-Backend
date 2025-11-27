@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Trackify.SubscriptionTracker.Application.Services.Query
+namespace Trackify.SubscriptionTracker.Application.Dtos
 {
-    internal class GetServiceById
+    internal class CategoryDto
     {
     }
 }

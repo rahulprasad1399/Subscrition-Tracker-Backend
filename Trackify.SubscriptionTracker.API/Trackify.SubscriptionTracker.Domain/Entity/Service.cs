@@ -15,7 +15,7 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         public int CategoryId { get; private set; }
         public int? CreatedByUserId { get; private set; }
         public Category Category { get; private set; }
-
+        public User User { get; set; }
         private Service()
         {
         }
@@ -25,6 +25,11 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
             ServiceName = serviceName;
             CategoryId = categoryId;
             CreatedByUserId = createdByUserId;
+        }
+        public void UpdateService(string newServiceName, int newCategoryId)
+        {
+            ServiceName = newServiceName;
+            CategoryId = newCategoryId;
         }
     }
     

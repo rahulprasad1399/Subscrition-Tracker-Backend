@@ -25,7 +25,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Query
         }
         public async Task<Category> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
-            var category = await _repository.GetByIdAsync(request.Id);
+            Category category = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if(category == null)
                 throw new NotFoundException(nameof(Category), request.Id);
             return category;
@@ -33,7 +33,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Query
     }
     public class GetCategoryByIdQueryValidator : AbstractValidator<GetCategoryByIdQuery> 
     {
-        public GetCategoryByIdQueryValidator(IGenericRepository<Category> repository)
+        public GetCategoryByIdQueryValidator()
         {
 
             RuleFor(x => x.Id)

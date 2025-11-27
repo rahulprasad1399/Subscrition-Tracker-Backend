@@ -26,7 +26,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
         }
         public async Task<int> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            int response = await _repository.DeleteAsync(request.Id);
+            int response = await _repository.DeleteAsync(request.Id,cancellationToken);
             if (response == 0)
                 throw new NotFoundException(nameof(Category), request.Id);
             return response;

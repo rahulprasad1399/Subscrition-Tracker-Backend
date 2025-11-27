@@ -27,7 +27,7 @@ namespace Trackify.SubscriptionTracker.Application.Services.Command
 
         public async Task<int> Handle(CreateServiceCommand request, CancellationToken cancellationToken)
         {
-            Service service = new Service(request.ServiceName,request.CategoryId,request.CreatedByUserId);
+            Service service = new(request.ServiceName,request.CategoryId,request.CreatedByUserId);
             await _repository.AddAsync(service, cancellationToken);
             return service.Id;
         }
