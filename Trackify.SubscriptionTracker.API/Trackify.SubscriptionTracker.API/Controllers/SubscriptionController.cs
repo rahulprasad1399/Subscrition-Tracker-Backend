@@ -12,31 +12,24 @@ namespace Trackify.SubscriptionTracker.API.Controllers
     [ApiController]
     public class SubscriptionController : ControllerBase
     {
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMediator _mediator;
-        public SubscriptionController(IHttpContextAccessor httpContextAccessor, IMediator mediator)
+        public SubscriptionController(IMediator mediator)
         {
-            _contextAccessor = httpContextAccessor;
             _mediator = mediator;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateSubscription([FromBody] CreateSubscriptionCommand command)
         {
-            var httpContext = _contextAccessor.HttpContext;
-            if (httpContext == null)
-            {
-                return BadRequest("No Active Session");
-            }
-            var userIdString = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdString))
             {
-                throw new Exception("Cannot find user id");
+                return Unauthorized("User not logged in.");
             }
 
-            var userId = int.Parse(userIdString);
-            command.UserId = userId;
+            command.UserId = int.Parse(userIdString);
+
             await _mediator.Send(command);
 
             return Ok(new { message = "Subscription created successfully" });

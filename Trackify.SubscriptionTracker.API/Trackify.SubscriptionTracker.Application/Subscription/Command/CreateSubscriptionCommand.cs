@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MediatR;
 using System.Text.Json.Serialization;
+using Trackify.SubscriptionTracker.Application.Exceptions;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
 using static Trackify.SubscriptionTracker.Domain.Entity.Subscription;
@@ -44,17 +45,17 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionCommand
         {
             if (!await _userRepository.ExistsAsync(request.UserId))
             {
-                throw new KeyNotFoundException("User Id not found");
+                throw new NotFoundException(nameof(User),request.UserId);
             }
 
             if (!await _serviceRepository.ExistsAsync(request.ServiceId))
             {
-                throw new KeyNotFoundException("Subscription Id not found");
+                throw new NotFoundException(nameof(Service), request.ServiceId);
             }
 
             if (!await _subscriptionTypeRepository.ExistsAsync(request.SubscriptionTypeId))
             {
-                throw new KeyNotFoundException("Subscription Type Id not found");
+                throw new NotFoundException(nameof(SubscriptionType), request.SubscriptionTypeId);
             }
 
             Subscription subscription = new Subscription(request.UserId, request.ServiceId,

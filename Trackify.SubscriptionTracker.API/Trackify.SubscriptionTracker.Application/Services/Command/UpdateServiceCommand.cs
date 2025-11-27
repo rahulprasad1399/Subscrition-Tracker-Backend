@@ -18,6 +18,7 @@ namespace Trackify.SubscriptionTracker.Application.Services.Command
         public int Id { get; set; }
         public string ServiceName { get; set; }
         public int CategoryId { get; set; }
+        [JsonIgnore]
         public int CreatedByUserId { get; set; }
     }
     public class UpdateServiceCommandHandler : IRequestHandler<UpdateServiceCommand, int>

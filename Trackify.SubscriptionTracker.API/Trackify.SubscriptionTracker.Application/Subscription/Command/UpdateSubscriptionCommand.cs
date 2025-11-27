@@ -2,9 +2,8 @@
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
@@ -15,7 +14,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionCommand
     public class UpdateSubscriptionCommand : IRequest<int>
     {
         [JsonIgnore]
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public int ServiceId { get; set; }
         public int SubscriptionTypeId { get; set; }
         public decimal Cost { get; set; }
@@ -26,42 +25,46 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionCommand
         public ActiveStatus Status { get; set; }
     }
 
-    public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscriptionCommand, int>
+public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscriptionCommand, int>
     {
-        private readonly IGenericRepository<User> _userRepository;
-        private readonly IGenericRepository<Subscription> _subscriptionRepository;
+        private readonly IGenericRepository<Service> _serviceRepository;
         private readonly IGenericRepository<SubscriptionType> _subscriptionTypeRepository;
         private readonly IGenericRepository<Subscription> _genericRepository;
-        public UpdateSubscriptionCommandHandler(IGenericRepository<User> userRepository,
-            IGenericRepository<Subscription> subscriptionRepository,
+
+        public UpdateSubscriptionCommandHandler(
+            IGenericRepository<Service> serviceRepository,
             IGenericRepository<SubscriptionType> subscriptionTypeRepository,
             IGenericRepository<Subscription> genericRepository)
         {
-            _userRepository = userRepository;
-            _subscriptionRepository = subscriptionRepository;
+            _serviceRepository = serviceRepository;
             _subscriptionTypeRepository = subscriptionTypeRepository;
             _genericRepository = genericRepository;
         }
+
         public async Task<int> Handle(UpdateSubscriptionCommand request, CancellationToken cancellationToken)
         {
-
-            if (!await _subscriptionRepository.ExistsAsync(request.ServiceId))
-            {
+            var existingSubscription = await _genericRepository.GetByIdAsync(request.Id);
+            if (existingSubscription == null)
                 throw new KeyNotFoundException("Subscription Id not found");
-            }
+
+            if (!await _serviceRepository.ExistsAsync(request.ServiceId))
+                throw new KeyNotFoundException("Service Id not found");
 
             if (!await _subscriptionTypeRepository.ExistsAsync(request.SubscriptionTypeId))
-            {
                 throw new KeyNotFoundException("Subscription Type Id not found");
-            }
 
-            var existingSubscription = await _genericRepository.GetByIdAsync(request.Id);
+            existingSubscription.UpdateSubscription(
+                request.ServiceId,
+                request.SubscriptionTypeId,
+                request.Cost,
+                request.BillingFrequency,
+                request.BillingPeriodUnit,
+                request.PurchaseDate,
+                request.RenewalDate,
+                request.Status
+            );
 
-            existingSubscription.UpdateSubscription(existingSubscription.ServiceId, existingSubscription.SubscriptionTypeId, 
-                existingSubscription.Cost, existingSubscription.BillingFrequency, existingSubscription.BillingPeriodUnit,
-                existingSubscription.PurchaseDate, existingSubscription.RenewalDate, existingSubscription.Status);
-
-            return await _genericRepository.UpdateAsync(existingSubscription);
+            return await _genericRepository.UpdateAsync(existingSubscription, cancellationToken);
         }
     }
 
@@ -69,28 +72,29 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionCommand
     {
         public UpdateSubscriptionCommandValidator()
         {
-            RuleFor((x) => x.ServiceId)
-    .NotNull().WithMessage("Service Id cannot be null");
+            RuleFor(x => x.ServiceId)
+                .NotNull().WithMessage("Service Id cannot be null");
 
-            RuleFor((x) => x.SubscriptionTypeId)
-                .NotNull().WithMessage("SubscriptionType Id cannot be null");
+            RuleFor(x => x.SubscriptionTypeId)
+                .NotNull().WithMessage("Subscription Type Id cannot be null");
 
-            RuleFor((x) => x.Cost)
+            RuleFor(x => x.Cost)
                 .NotNull().WithMessage("Cost cannot be null")
                 .GreaterThanOrEqualTo(0).WithMessage("Cost cannot be negative");
 
-            RuleFor((x) => x.BillingFrequency)
+            RuleFor(x => x.BillingFrequency)
                 .NotNull().WithMessage("BillingFrequency cannot be null")
                 .GreaterThan(0).WithMessage("BillingFrequency must be greater than 0");
 
-            RuleFor((x) => x.BillingPeriodUnit)
+            RuleFor(x => x.BillingPeriodUnit)
                 .NotEmpty().WithMessage("BillingPeriodUnit cannot be null");
 
             RuleFor(x => x.PurchaseDate)
-                .LessThanOrEqualTo(DateTime.Today).WithMessage("Purchase date cannot be in the future.");
+                .LessThanOrEqualTo(DateTime.Today).WithMessage("Purchase date cannot be in the future");
 
             RuleFor(x => x)
-                .Must(x => x.RenewalDate > x.PurchaseDate).WithMessage("Renewal date must be greater than purchase date.");
+                .Must(x => x.RenewalDate > x.PurchaseDate)
+                .WithMessage("Renewal date must be greater than purchase date");
 
             RuleFor(x => x.Status)
                 .IsInEnum().WithMessage("Invalid active status");

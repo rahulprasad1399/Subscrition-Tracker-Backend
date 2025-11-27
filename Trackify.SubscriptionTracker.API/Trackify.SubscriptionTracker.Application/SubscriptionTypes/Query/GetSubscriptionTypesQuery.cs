@@ -24,7 +24,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Query
 
         public async Task<IEnumerable<SubscriptionTypeDto>> Handle(GetSubscriptionTypesQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<SubscriptionType> subscriptionTypes=  await _repository.GetAllAsync(cancellationToken);
+            IEnumerable<SubscriptionType> subscriptionTypes = await _repository.GetAllAsync(cancellationToken);
             IEnumerable<SubscriptionTypeDto> subscriptionTypeDtos = subscriptionTypes.Select(x => new SubscriptionTypeDto()
             {
                 Id = x.Id,
@@ -33,6 +33,6 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Query
             });
             return subscriptionTypeDtos;
         }
-    } 
+    }
 
 }

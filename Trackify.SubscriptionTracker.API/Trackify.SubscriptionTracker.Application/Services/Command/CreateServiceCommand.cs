@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
@@ -14,6 +15,7 @@ namespace Trackify.SubscriptionTracker.Application.Services.Command
     {
         public string ServiceName { get; set; }
         public int CategoryId { get; set; }
+        [JsonIgnore]
         public int CreatedByUserId { get; set; }
     }
     public class CreateServiceCommandHandler : IRequestHandler<CreateServiceCommand, int>

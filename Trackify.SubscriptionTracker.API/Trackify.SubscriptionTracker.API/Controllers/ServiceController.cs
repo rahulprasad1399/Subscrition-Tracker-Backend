@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Trackify.SubscriptionTracker.Application.Dtos;
 using Trackify.SubscriptionTracker.Application.Services.Command;
 using Trackify.SubscriptionTracker.Application.Services.Query;
@@ -38,12 +39,25 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CreateServiceCommand command)
         {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not logged in.");
+            }
+            command.CreatedByUserId = int.Parse(userIdString);
             int response = await _mediator.Send(command);
             return Ok(response);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, UpdateServiceCommand command)
         {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not logged in.");
+            }
+
+            command.CreatedByUserId = int.Parse(userIdString);
             command.Id = id;
             int response = await _mediator.Send(command);
             return Ok(response);

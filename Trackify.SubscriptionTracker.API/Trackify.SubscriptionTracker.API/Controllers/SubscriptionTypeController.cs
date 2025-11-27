@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Trackify.SubscriptionTracker.Application.Dtos;
 using Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command;
 using Trackify.SubscriptionTracker.Application.SubscriptionTypes.Query;
@@ -26,7 +27,7 @@ namespace Trackify.SubscriptionTracker.API.Controllers
             return Ok(response);
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute]int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             GetSubscriptionTypeByIdQuery query = new()
             {
@@ -38,24 +39,40 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CreateSubscriptionTypeCommand command)
         {
+
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not logged in.");
+            }
+
+            command.CreatedByUserId = int.Parse(userIdString);
+
             int response = await _mediator.Send(command);
             return Ok(response);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id,UpdateSubscriptionTypeCommand command)
+        public async Task<IActionResult> Update([FromRoute] int id, UpdateSubscriptionTypeCommand command)
         {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not logged in.");
+            }
+
+            command.CreatedByUserId = int.Parse(userIdString);
             command.Id = id;
-            int response =await _mediator.Send(command);
+            int response = await _mediator.Send(command);
             return Ok(response);
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute]int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             DeleteSubscriptionTypeCommand command = new()
             {
                 Id = id
             };
-            int response =await _mediator.Send(command);
+            int response = await _mediator.Send(command);
             return Ok(response);
         }
     }

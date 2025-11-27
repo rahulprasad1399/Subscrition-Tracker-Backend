@@ -17,6 +17,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
         [JsonIgnore]
         public int Id {  get; set; }
         public string TypeName { get; set; }
+        [JsonIgnore]
         public int CreatedByUserId { get; set; }
     }
     public class UpdateSubscriptionTypeCommandHandler : IRequestHandler<UpdateSubscriptionTypeCommand, int>
