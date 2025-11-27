@@ -13,6 +13,7 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         [Required,MaxLength(25)]
         public string TypeName { get; private set; }
         public int? CreatedByUserId { get; private set; }
+        public User User { get; set; }
 
         public SubscriptionType(string typeName,int? createdByUserId = null) 
         {

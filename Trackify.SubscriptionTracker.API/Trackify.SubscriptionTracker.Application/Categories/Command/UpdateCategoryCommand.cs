@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
         }
         public async Task<int> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
-            var category = await _repository.GetByIdAsync(request.Id);
+            Category category = await _repository.GetByIdAsync(request.Id);
 
             if (category == null)
             {
@@ -38,7 +38,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
 
             category.Update(request.CategoryName);
 
-            return await _repository.SaveChangesAsync();
+            return await _repository.SaveChangesAsync(cancellationToken);
 
         }
     }
