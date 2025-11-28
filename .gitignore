@@ -121,3 +121,6 @@ Desktop.ini
 
 # Ignore EF Migrations in all projects
 **/Migrations/
+
+appsettings.json
+appsettings.Development.json
