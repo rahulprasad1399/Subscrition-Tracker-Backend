@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using Trackify.SubscriptionTracker.API;
 using Trackify.SubscriptionTracker.API.Middlewares;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Infrastructure.Data;
@@ -43,6 +44,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHostedService<CroneJob>();
 
 builder.Services.AddValidatorsFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application"));
 
