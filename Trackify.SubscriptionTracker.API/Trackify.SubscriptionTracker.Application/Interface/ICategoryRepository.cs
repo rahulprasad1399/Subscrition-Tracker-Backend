@@ -10,6 +10,6 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
 {
     public interface ICategoryRepository : IGenericRepository<Category>
     {
-        Task<bool> IsNameUniqueAsync(string categoryName);
+        Task<bool> IsNameUniqueAsync(string categoryName, CancellationToken cancellationToken);
     }
 }

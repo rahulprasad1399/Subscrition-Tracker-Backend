@@ -16,29 +16,19 @@ namespace Trackify.SubscriptionTracker.Application.NotificationCommand
 
     public class UpdateNotificationCommandHandler : IRequestHandler<UpdateNotificationCommand, int>
     {
-        private readonly IGenericRepository<UserNotification> _genericRepository;
-        public UpdateNotificationCommandHandler(IGenericRepository<UserNotification> genericRepository)
+        private readonly INotificationRepository _repository;
+
+        public UpdateNotificationCommandHandler(INotificationRepository repository)
         {
-            _genericRepository = genericRepository;
+            _repository = repository;
         }
         public async Task<int> Handle(UpdateNotificationCommand request, CancellationToken cancellationToken)
         {
-            int count = 0;
-            foreach(int id in request.NotificationIds)
-            {
-                var notification = await _genericRepository.GetByIdAsync(id);
-                if(notification == null)
-                {
-                    continue;
-                }
+            List<int> notificationIds = request.NotificationIds;
 
-                notification.MarkAsRead();
-                count++;
-
-            }
-
-            await _genericRepository.SaveChangesAsync();
-            return count;
+            int resposonse = await _repository.MarkAsReadAsync(notificationIds,cancellationToken);
+            
+            return resposonse;
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Command
             RuleFor(x => x.CategoryName)
                 .MustAsync(async (name, cancellation) =>
                 {
-                    var existing = await _repository.IsNameUniqueAsync(name);
+                    var existing = await _repository.IsNameUniqueAsync(name,cancellation);
                     return !existing;
                 }).WithMessage("Category already exists");
         }

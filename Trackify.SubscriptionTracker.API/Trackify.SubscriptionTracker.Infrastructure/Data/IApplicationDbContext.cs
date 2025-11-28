@@ -18,6 +18,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data
         DbSet<User> Users { get; set; }
         DbSet<Subscription> Subscriptions { get; set; }
 
+        DbSet<UserNotification> UserNotifications { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         EntityEntry<T> Entry<T>(T entity) where T : class;
     }
