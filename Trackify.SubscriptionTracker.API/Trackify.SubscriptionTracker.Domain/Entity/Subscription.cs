@@ -20,6 +20,8 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         public string BillingPeriodUnit { get; private set; }
         public DateTime PurchaseDate { get; private set; }
         public DateTime RenewalDate { get; private set; }
+        public bool IsSendNotification { get; private set; }
+        public DateTime NotificationDate { get; private set; }
         public ActiveStatus Status { get; private set; }
 
         public Subscription(int userId, int serviceId, int subscriptionTypeId, decimal cost, int billingFrequency, string billingPeriodUnit, DateTime purchaseDate, DateTime renewalDate, ActiveStatus status)
@@ -33,6 +35,7 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
             PurchaseDate = purchaseDate;
             RenewalDate = renewalDate;
             Status = status;
+            IsSendNotification = false;
         }
 
         public void UpdateSubscription(int serviceId, int subscriptionTypeId, decimal cost, int billingFrequency,
@@ -59,6 +62,12 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
             Active,
             Cancelled,
             Paused
+        }
+
+        public void updateSubscriptionNotification()
+        {
+            IsSendNotification = true;
+            NotificationDate = DateTime.UtcNow;
         }
 
         private Subscription() { }

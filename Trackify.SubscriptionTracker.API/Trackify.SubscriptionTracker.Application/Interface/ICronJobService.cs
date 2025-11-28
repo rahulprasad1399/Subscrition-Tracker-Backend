@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Trackify.SubscriptionTracker.Application.Interface
 {
-    internal class ICronJobService
+    public interface ICronJobService 
     {
+        Task ExecuteJobAsync();
     }
 }
