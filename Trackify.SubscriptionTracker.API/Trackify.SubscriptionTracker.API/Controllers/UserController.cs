@@ -91,7 +91,7 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            LogoutCommand command = new LogoutCommand();
+            LogoutCommand command = new();
             var logoutResponse = await _mediator.Send(command);
             return Ok(new { message = logoutResponse });
         }

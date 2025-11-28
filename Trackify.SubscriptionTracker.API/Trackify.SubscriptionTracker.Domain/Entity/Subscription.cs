@@ -26,6 +26,7 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         public Service Service { get; private set; }
         public SubscriptionType SubscriptionType { get; private set; }
 
+        public User User { get; private set; }
         public Subscription(int userId, int serviceId, int subscriptionTypeId, decimal cost, int billingFrequency, string billingPeriodUnit, DateTime purchaseDate, DateTime renewalDate, ActiveStatus status)
         {
             UserId = userId;

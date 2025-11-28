@@ -42,7 +42,7 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.None,
-                    Expires = DateTime.UtcNow.AddMinutes(5),
+                    Expires = DateTime.UtcNow.AddMinutes(30),
                     Path = "/"
                 });
 
@@ -51,7 +51,7 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.None,
-                    Expires = DateTime.UtcNow.AddMinutes(10)
+                    Expires = DateTime.UtcNow.AddDays(7)
                 });
             }
 

@@ -25,6 +25,11 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Services
                 await _mediator.Send(new NotificationCreateCommand
                 {
                     UserId = subscription.UserId,
+                    UserEmail = subscription.User.Email,
+                    UserName  = subscription.User.FullName,
+                    Cost = subscription.Cost,
+                    ServiceName = subscription.Service.ServiceName,
+                    RenewalDate = subscription.RenewalDate,
                     SubscriptionId = subscription.Id,
                     Title = $"Your subscription for {subscription.Service.ServiceName} is renewing soon",
                     Type = "RenewalReminder"
