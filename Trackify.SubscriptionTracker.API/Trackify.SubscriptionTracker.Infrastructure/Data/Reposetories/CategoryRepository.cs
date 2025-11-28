@@ -15,9 +15,9 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
         {
             _context = context;
         }
-        public async Task<bool> IsNameUniqueAsync(string categoryName)
+        public async Task<bool> IsNameUniqueAsync(string categoryName, CancellationToken cancellationToken = default)
         {
-            return await _context.Categories.AnyAsync(x=>x.CategoryName== categoryName);
+            return await _context.Categories.AnyAsync(x=>x.CategoryName== categoryName,cancellationToken);
         }
     }
 }
