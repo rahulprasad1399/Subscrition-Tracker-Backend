@@ -17,6 +17,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
         [JsonIgnore]
         public int Id {  get; set; }
         public string TypeName { get; set; }
+        [JsonIgnore]
         public int CreatedByUserId { get; set; }
     }
     public class UpdateSubscriptionTypeCommandHandler : IRequestHandler<UpdateSubscriptionTypeCommand, int>
@@ -29,7 +30,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
         }
         public async Task<int> Handle(UpdateSubscriptionTypeCommand request, CancellationToken cancellationToken)
         {
-            SubscriptionType subscriptionType = await _repository.GetByIdAsync(request.Id);
+            SubscriptionType subscriptionType = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if (subscriptionType ==null)
             {
                 throw new NotFoundException(nameof(SubscriptionType),request.Id);
@@ -40,7 +41,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
             }
 
             subscriptionType.UpdateTypeName(request.TypeName);
-            return await _repository.SaveChangesAsync();    
+            return await _repository.SaveChangesAsync(cancellationToken);    
 
         }
     }

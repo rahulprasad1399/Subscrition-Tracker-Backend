@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
@@ -14,6 +15,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
     public class CreateSubscriptionTypeCommand : IRequest<int>
     {
         public string TypeName { get; set; }
+        [JsonIgnore]
         public int CreatedByUserId { get; set; }
     }
 
@@ -27,7 +29,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
         }
         public async Task<int> Handle(CreateSubscriptionTypeCommand request, CancellationToken cancellationToken)
         {
-            SubscriptionType subscriptionType = new SubscriptionType(request.TypeName,request.CreatedByUserId);
+            SubscriptionType subscriptionType = new(request.TypeName,request.CreatedByUserId);
             await _repository.AddAsync(subscriptionType,cancellationToken);
             return subscriptionType.Id;
         }

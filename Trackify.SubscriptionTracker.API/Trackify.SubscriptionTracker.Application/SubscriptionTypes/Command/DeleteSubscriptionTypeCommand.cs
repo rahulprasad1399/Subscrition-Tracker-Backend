@@ -27,7 +27,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionTypes.Command
 
         public async Task<int> Handle(DeleteSubscriptionTypeCommand request, CancellationToken cancellationToken)
         {
-            int response = await _repository.DeleteAsync(request.Id);
+            int response = await _repository.DeleteAsync(request.Id, cancellationToken);
             if (response == 0) 
             {
                 throw new NotFoundException(nameof(SubscriptionType),request.Id);

@@ -63,6 +63,8 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CreatedByUserId");
+
                     b.ToTable("Services");
                 });
 
@@ -127,6 +129,8 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedByUserId");
+
                     b.ToTable("SubscriptionTypes");
                 });
 
@@ -182,7 +186,22 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId");
+
                     b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.SubscriptionType", b =>
+                {
+                    b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("CreatedByUserId");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

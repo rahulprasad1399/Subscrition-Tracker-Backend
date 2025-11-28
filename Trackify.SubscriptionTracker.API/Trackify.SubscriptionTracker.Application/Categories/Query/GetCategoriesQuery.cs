@@ -22,7 +22,7 @@ namespace Trackify.SubscriptionTracker.Application.Categories.Query
         }
         public async Task<IEnumerable<Category>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
         {
-            return await _repository.GetAllAsync();
+            return await _repository.GetAllAsync(cancellationToken);
         }
     }
 }
