@@ -1,42 +1,53 @@
 ﻿using MediatR;
+using Trackify.SubscriptionTracker.Application.Dtos;
 using Trackify.SubscriptionTracker.Application.Interface;
-using Trackify.SubscriptionTracker.Application.SubscriptionDto;
+using Trackify.SubscriptionTracker.Application.SubscriptionGetAllDto;
 using Trackify.SubscriptionTracker.Domain.Entity;
 
 namespace Trackify.SubscriptionTracker.Application.SubscriptionQuery
 {
-    public class GetAllSubscriptionQuery : IRequest<List<SubscriptionGetDto>>
+    public class GetAllSubscriptionQuery : IRequest<SubscriptionResponseDto>
     {
+        public int UserId { get; set; }
     }
 
-    public class GetAllSubscriptionQueryHandler : IRequestHandler<GetAllSubscriptionQuery, List<SubscriptionGetDto>>
+    public class GetAllSubscriptionQueryHandler : IRequestHandler<GetAllSubscriptionQuery, SubscriptionResponseDto>
     {
-        private readonly IGenericRepository<Subscription> _genericRepository;
+        private readonly ISubscriptionGetAll _subscriptionGetAll;
 
-        public GetAllSubscriptionQueryHandler(IGenericRepository<Subscription> genericRepository)
+        public GetAllSubscriptionQueryHandler(ISubscriptionGetAll subscriptionGetAll)
         {
-            _genericRepository = genericRepository;
+            _subscriptionGetAll = subscriptionGetAll;
         }
 
-        public async Task<List<SubscriptionGetDto>> Handle(GetAllSubscriptionQuery request, CancellationToken cancellationToken)
+        public async Task<SubscriptionResponseDto> Handle(GetAllSubscriptionQuery request, CancellationToken cancellationToken)
         {
-            var subscriptions = await _genericRepository.GetAllAsync(cancellationToken);
+            var subscriptions = await _subscriptionGetAll.SubscriptionGetAllAsync(request.UserId);
 
             var subscriptionGetDtos = subscriptions.Select(subscription => new SubscriptionGetDto
             {
                 Id = subscription.Id,
-                UserId = subscription.UserId,
                 ServiceId = subscription.ServiceId,
-                SubscriptionTypeId = subscription.SubscriptionTypeId,
+                ServiceName = subscription.Service.ServiceName,
+                SubscriptionTypeName = subscription.SubscriptionType.TypeName,
+                CategoryName = subscription.Service.Category.CategoryName,
                 Cost = subscription.Cost,
-                BillingPeriodUnit = subscription.BillingPeriodUnit,
-                BillingFrequency = subscription.BillingFrequency,
                 PurchaseDate = subscription.PurchaseDate,
                 RenewalDate = subscription.RenewalDate,
                 Status = subscription.Status
             }).ToList();
 
-            return subscriptionGetDtos;
+            return new SubscriptionResponseDto
+            {
+                TotalItem = subscriptionGetDtos.Count,
+                ActiveItem = subscriptionGetDtos.Where((sub) => sub.Status == Subscription.ActiveStatus.Active).Count(),
+                MoneySpentMonthly = subscriptionGetDtos
+                                    .Where(x => x.PurchaseDate.Month == DateTime.UtcNow.Month
+                                     && x.PurchaseDate.Year == DateTime.UtcNow.Year)
+                                    .Sum(x => x.Cost),
+                Subscriptions = subscriptionGetDtos
+            };
         }
+
     }
 }

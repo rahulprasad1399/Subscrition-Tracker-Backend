@@ -1,50 +1,48 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Interface;
-using Trackify.SubscriptionTracker.Application.SubscriptionDto;
+using Trackify.SubscriptionTracker.Application.SubscriptionGetByIdDtos;
 using Trackify.SubscriptionTracker.Domain.Entity;
+using static Trackify.SubscriptionTracker.Domain.Entity.Subscription;
 
 namespace Trackify.SubscriptionTracker.Application.SubscriptionQuery
 {
-    public class SubscriptionGetByIdQuery : IRequest<SubscriptionGetDto>
+    public class SubscriptionGetByIdQuery : IRequest<SubscriptionGetByIdDto>
     {
         [JsonIgnore]
         public int Id { get; set; }
     }
 
-    public class SubscriptionGetByIdQueryHandler : IRequestHandler<SubscriptionGetByIdQuery, SubscriptionGetDto>
+    public class SubscriptionGetByIdQueryHandler : IRequestHandler<SubscriptionGetByIdQuery, SubscriptionGetByIdDto>
     {
-        private readonly IGenericRepository<Subscription> _genericRepository;
-        public SubscriptionGetByIdQueryHandler(IGenericRepository<Subscription> genericRepository)
+        private readonly ISubscriptionGetAll _subscriptionrepo;
+        public SubscriptionGetByIdQueryHandler(ISubscriptionGetAll subscriptionrepo)
         {
-            _genericRepository = genericRepository;
+            _subscriptionrepo = subscriptionrepo;
         }
-        public async Task<SubscriptionGetDto> Handle(SubscriptionGetByIdQuery request, CancellationToken cancellationToken)
+        public async Task<SubscriptionGetByIdDto> Handle(SubscriptionGetByIdQuery request, CancellationToken cancellationToken)
         {
-            Subscription existingSubscription = await _genericRepository.GetByIdAsync(request.Id);
+            Subscription existingSubscription = await _subscriptionrepo.SubscriptionGetByIdAsync(request.Id);
             if (existingSubscription == null)
             {
                 throw new KeyNotFoundException("Subscription dosent exist with the given Id");
             }
 
-            return new SubscriptionGetDto
+            return new SubscriptionGetByIdDto
             {
                 Id = existingSubscription.Id,
-                UserId = existingSubscription.UserId,
                 ServiceId = existingSubscription.ServiceId,
-                SubscriptionTypeId = existingSubscription.SubscriptionTypeId,
+                ServiceName = existingSubscription.Service.ServiceName,
+                subscriptionTypeId = existingSubscription.SubscriptionTypeId,
+                SubscriptionTypeName = existingSubscription.SubscriptionType.TypeName,
+                categoryId = existingSubscription.Service.CategoryId,
+                CategoryName = existingSubscription.Service.Category.CategoryName,
                 Cost = existingSubscription.Cost,
-                BillingPeriodUnit = existingSubscription.BillingPeriodUnit,
-                BillingFrequency = existingSubscription.BillingFrequency,
                 PurchaseDate = existingSubscription.PurchaseDate,
                 RenewalDate = existingSubscription.RenewalDate,
-                Status = existingSubscription.Status
-
+                Status = existingSubscription.Status,
+                BillingPeriodUnit = existingSubscription.BillingPeriodUnit,
+                BillingFrequency = existingSubscription.BillingFrequency,
             };
         }
     }

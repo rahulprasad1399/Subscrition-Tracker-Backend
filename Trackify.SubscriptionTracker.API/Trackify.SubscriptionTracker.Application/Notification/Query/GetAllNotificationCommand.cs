@@ -43,7 +43,8 @@ namespace Trackify.SubscriptionTracker.Application.NotificationQuery
                 Type = n.Type,
                 IsRead = n.IsRead,
                 CreatedAt = n.CreatedAt,
-                ReadAt = n.ReadAt
+                ReadAt = n.ReadAt,
+                UserId = n.UserId,
             }).ToList();
         }
     }

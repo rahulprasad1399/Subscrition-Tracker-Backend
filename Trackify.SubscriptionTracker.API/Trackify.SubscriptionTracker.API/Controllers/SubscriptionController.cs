@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Trackify.SubscriptionTracker.Application.Dtos;
 using Trackify.SubscriptionTracker.Application.SubscriptionCommand;
-using Trackify.SubscriptionTracker.Application.SubscriptionDto;
 using Trackify.SubscriptionTracker.Application.SubscriptionQuery;
 
 namespace Trackify.SubscriptionTracker.API.Controllers
@@ -64,8 +63,19 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllSubscription()
         {
-            GetAllSubscriptionQuery query = new GetAllSubscriptionQuery();
-            List<SubscriptionGetDto> subscriptions = await _mediator.Send(query);
+
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not logged in.");
+            }
+
+            var query = new GetAllSubscriptionQuery
+            {
+                UserId = int.Parse(userIdString)
+            };
+
+            SubscriptionResponseDto subscriptions = await _mediator.Send(query);
             return Ok(subscriptions);
         }
 
@@ -75,7 +85,7 @@ namespace Trackify.SubscriptionTracker.API.Controllers
             SubscriptionGetByIdQuery query = new SubscriptionGetByIdQuery();
             query.Id = id;
 
-            SubscriptionGetDto subscription = await _mediator.Send(query);
+            var subscription = await _mediator.Send(query);
             return Ok(subscription);
         }
 
