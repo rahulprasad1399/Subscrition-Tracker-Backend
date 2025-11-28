@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Trackify.SubscriptionTracker.Application.Interface
 {
-    public interface ICronJobService 
+    public interface ISubscriptionNotificationService
     {
-        Task ExecuteJobAsync();
+        Task CheckUpcomingRenewalsAsync();
     }
 }

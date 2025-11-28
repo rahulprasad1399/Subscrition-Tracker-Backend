@@ -23,6 +23,8 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         public bool IsSendNotification { get; private set; }
         public DateTime NotificationDate { get; private set; }
         public ActiveStatus Status { get; private set; }
+        public Service Service { get; private set; }
+        public SubscriptionType SubscriptionType { get; private set; }
 
         public Subscription(int userId, int serviceId, int subscriptionTypeId, decimal cost, int billingFrequency, string billingPeriodUnit, DateTime purchaseDate, DateTime renewalDate, ActiveStatus status)
         {

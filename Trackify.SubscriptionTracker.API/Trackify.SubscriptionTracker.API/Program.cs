@@ -1,4 +1,5 @@
 using FluentValidation;
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using Trackify.SubscriptionTracker.API.Middlewares;
 using Trackify.SubscriptionTracker.Application.Interface;
+using Trackify.SubscriptionTracker.Domain.Entity;
 using Trackify.SubscriptionTracker.Infrastructure.Data;
 using Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories;
 using Trackify.SubscriptionTracker.Infrastructure.Services;
@@ -46,6 +48,10 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddValidatorsFromAssembly(Assembly.Load("Trackify.SubscriptionTracker.Application"));
+
+// HangFire
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionNotificationService, SubscriptionNotificationService>();
 
 builder.Services.AddMediatR(x =>
 {
@@ -87,7 +93,24 @@ builder.Services.AddAuthentication((options) =>
     };
 });
 
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddHangfireServer();
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    recurringJobs.AddOrUpdate<ISubscriptionNotificationService>(
+        "check-renewals",
+        job => job.CheckUpcomingRenewalsAsync(),
+        Cron.Minutely
+    );
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -102,8 +125,10 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseHangfireDashboard();
 app.Run();

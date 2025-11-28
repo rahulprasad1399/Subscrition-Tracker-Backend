@@ -88,6 +88,12 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("IsSendNotification")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("NotificationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("PurchaseDate")
                         .HasColumnType("datetime2");
 
@@ -107,6 +113,10 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ServiceId");
+
+                    b.HasIndex("SubscriptionTypeId");
 
                     b.ToTable("Subscriptions");
                 });
@@ -178,6 +188,46 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("UserNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserNotifications");
+                });
+
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.Service", b =>
                 {
                     b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.Category", "Category")
@@ -195,11 +245,49 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.Subscription", b =>
+                {
+                    b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.SubscriptionType", "SubscriptionType")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Service");
+
+                    b.Navigation("SubscriptionType");
+                });
+
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.SubscriptionType", b =>
                 {
                     b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.User", "User")
                         .WithMany()
                         .HasForeignKey("CreatedByUserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UserNotification", b =>
+                {
+                    b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.Subscription", "Subscription")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Subscription");
 
                     b.Navigation("User");
                 });
