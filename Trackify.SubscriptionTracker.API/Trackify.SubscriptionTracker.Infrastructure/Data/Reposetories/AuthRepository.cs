@@ -36,7 +36,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
         public async Task SaveRefreshTokenAsync(User user, string refreshToken)
         {
 
-            user.AddRefreshToken(refreshToken, DateTime.UtcNow.AddMinutes(10));
+            user.AddRefreshToken(refreshToken, DateTime.UtcNow.AddDays(7));
             await _context.SaveChangesAsync();
         }
 

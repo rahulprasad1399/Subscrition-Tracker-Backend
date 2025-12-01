@@ -33,7 +33,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Services
                 issuer: _configuration.GetValue<string>("AppSettings:Issuer"),
                 audience: _configuration.GetValue<string>("AppSettings:Audience"),
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddMinutes(30),
                 signingCredentials: cred
                 );
 
