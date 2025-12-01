@@ -12,6 +12,7 @@ namespace Trackify.SubscriptionTracker.Application.Dtos
         public int TotalItem { get; set; }
         public int ActiveItem { get; set; }
         public decimal MoneySpentMonthly { get; set; }
+        public int UpcomingRenewal { get; set; }
         public List<SubscriptionGetDto> Subscriptions { get; set; }
     }
 

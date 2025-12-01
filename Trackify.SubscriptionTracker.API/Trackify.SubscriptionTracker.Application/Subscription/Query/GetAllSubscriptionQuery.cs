@@ -45,6 +45,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionQuery
                                     .Where(x => x.PurchaseDate.Month == DateTime.UtcNow.Month
                                      && x.PurchaseDate.Year == DateTime.UtcNow.Year)
                                     .Sum(x => x.Cost),
+                UpcomingRenewal = subscriptionGetDtos.Where((x) => x.RenewalDate <= DateTime.UtcNow.AddDays(7).Date).Count(),
                 Subscriptions = subscriptionGetDtos
             };
         }
