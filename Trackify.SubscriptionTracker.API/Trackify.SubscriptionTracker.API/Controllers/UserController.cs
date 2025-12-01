@@ -71,8 +71,9 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenCommand refreshTokenCommand)
+        public async Task<IActionResult> RefreshToken()
         {
+            RefreshTokenCommand refreshTokenCommand = new RefreshTokenCommand();
             var response = await _mediator.Send(refreshTokenCommand);
             if (response == null)
             {
@@ -81,7 +82,7 @@ namespace Trackify.SubscriptionTracker.API.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Subscriber")]
         [HttpGet("validate")]
         public IActionResult Validate()
         {
