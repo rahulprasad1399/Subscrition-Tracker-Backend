@@ -46,6 +46,7 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IServiceGetAllAsync, ServiceRepository>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ISubscriptionGetAll, SubscriptionGetAllRepository>();

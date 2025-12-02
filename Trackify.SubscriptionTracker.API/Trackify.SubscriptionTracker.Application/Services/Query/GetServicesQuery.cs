@@ -12,25 +12,27 @@ namespace Trackify.SubscriptionTracker.Application.Services.Query
 {
     public class GetServicesQuery : IRequest<IEnumerable<ServiceDto>>
     {
+        public int userId { get; set; }
     }
-    public class GetServicesQueryHandler : IRequestHandler<GetServicesQuery, IEnumerable<ServiceDto>> 
+    public class GetServicesQueryHandler : IRequestHandler<GetServicesQuery, IEnumerable<ServiceDto>>
     {
-        private readonly IGenericRepository<Service> _repository;
+        private readonly IServiceGetAllAsync _servicerepo;
 
-        public GetServicesQueryHandler(IGenericRepository<Service> repository)
+        public GetServicesQueryHandler(IServiceGetAllAsync servicerepo)
         {
-            _repository = repository;
+            _servicerepo = servicerepo;
         }
 
         public async Task<IEnumerable<ServiceDto>> Handle(GetServicesQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<Service> services = await _repository.GetAllAsync(cancellationToken);
+            IEnumerable<Service> services = await _servicerepo.GetAllServiceAsync(request.userId);
             IEnumerable<ServiceDto> serviceDtos = services.Select(x => new ServiceDto()
             {
                 Id = x.Id,
                 ServiceName = x.ServiceName,
                 CategoryId = x.CategoryId,
                 CreatedByUserId = x.CreatedByUserId,
+                CategoryName = x.Category.CategoryName
             });
             return serviceDtos;
         }

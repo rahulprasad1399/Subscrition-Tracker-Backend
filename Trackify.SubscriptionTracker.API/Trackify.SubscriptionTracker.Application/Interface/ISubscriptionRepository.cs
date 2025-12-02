@@ -10,5 +10,6 @@ namespace Trackify.SubscriptionTracker.Application.Interface
     public interface ISubscriptionRepository 
     {
         Task<List<Subscription>> GetSubscriptionsForRenewalAsync();
+        Task<int> UpdateSubscriptionsAsync();
     }
 }

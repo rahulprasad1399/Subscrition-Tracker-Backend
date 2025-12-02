@@ -27,11 +27,14 @@ namespace Trackify.SubscriptionTracker.Application.Notification.Command
         private readonly IGenericRepository<UserNotification> _genericRepository;
         private readonly IEmailService _emailService;
         private readonly IGenericRepository<User> _userRepository;
+        private readonly IGenericRepository<Subscription> _subscriptionRepository;
 
-        public NotificationCreateCommandHandler(IGenericRepository<UserNotification> genericRepository,IEmailService emailService)
+        public NotificationCreateCommandHandler(IGenericRepository<UserNotification> genericRepository,
+            IEmailService emailService, IGenericRepository<Subscription> subscriptionRepository)
         {
             _genericRepository = genericRepository;
             _emailService = emailService;
+            _subscriptionRepository = subscriptionRepository;
         }
         public async Task<bool> Handle(NotificationCreateCommand request, CancellationToken cancellationToken)
         {
@@ -83,6 +86,13 @@ namespace Trackify.SubscriptionTracker.Application.Notification.Command
             </body>
             </html>
             ";
+
+            Subscription subscription = await _subscriptionRepository.GetByIdAsync(request.SubscriptionId);
+            if (subscription == null)
+            {
+                throw new KeyNotFoundException("Subscription Id dosen't exist");
+            }
+
             await _emailService.SendEmailAsync(request.UserEmail,request.Title,htmlMessage);
             await _genericRepository.AddAsync(notification,cancellationToken);
 
