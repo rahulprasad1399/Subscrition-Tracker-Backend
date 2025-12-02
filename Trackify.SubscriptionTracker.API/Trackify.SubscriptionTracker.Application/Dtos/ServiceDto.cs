@@ -10,10 +10,11 @@ namespace Trackify.SubscriptionTracker.Application.Dtos
 {
     public class ServiceDto
     {
-        public int Id { get;  set; }
-        public string ServiceName { get;  set; }
+        public int Id { get; set; }
+        public string ServiceName { get; set; }
         public int CategoryId { get; set; }
         public int? CreatedByUserId { get; set; }
-        
+        public string? CategoryName { get; set; }
+
     }
 }

@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Trackify.SubscriptionTracker.Application.Notification.Query;
 using Trackify.SubscriptionTracker.Application.Users.Command;
 using Trackify.SubscriptionTracker.Application.Users.Dto;
 using Trackify.SubscriptionTracker.Application.Users.Query;
@@ -84,9 +86,20 @@ namespace Trackify.SubscriptionTracker.API.Controllers
 
         [Authorize(Roles = "Subscriber")]
         [HttpGet("validate")]
-        public IActionResult Validate()
+        public async Task<IActionResult> Validate()
         {
-            return Ok(new { authenticated = true });
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not logged in.");
+            }
+
+            ValidateUserQuery query = new ValidateUserQuery
+            {
+                UserId = int.Parse(userIdString)
+            };
+            GetUserDto user = await _mediator.Send(query);
+            return Ok(user);
         }
 
         [HttpPost("logout")]

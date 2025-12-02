@@ -20,6 +20,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Services
         public async Task CheckUpcomingRenewalsAsync()
         {
             var upcomingSubscriptions = await _subscriptionRepository.GetSubscriptionsForRenewalAsync();
+            int respo = await _subscriptionRepository.UpdateSubscriptionsAsync();
             foreach (var subscription in upcomingSubscriptions)
             {
                 await _mediator.Send(new NotificationCreateCommand
@@ -39,6 +40,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Services
 
                 await _genericRepository.UpdateAsync(subscription);
             }
+
         }
     }
 }

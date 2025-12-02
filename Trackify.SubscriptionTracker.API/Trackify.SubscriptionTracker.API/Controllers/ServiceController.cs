@@ -6,6 +6,7 @@ using Trackify.SubscriptionTracker.Application.Dtos;
 using Trackify.SubscriptionTracker.Application.Services.Command;
 using Trackify.SubscriptionTracker.Application.Services.Query;
 using Trackify.SubscriptionTracker.Domain.Entity;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Trackify.SubscriptionTracker.API.Controllers
 {
@@ -22,7 +23,14 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("User not logged in.");
+            }
+
             GetServicesQuery getServicesQuery = new();
+            getServicesQuery.userId = int.Parse(userId);
             IEnumerable<ServiceDto> services = await _mediator.Send(getServicesQuery);
             return Ok(services);
         }
