@@ -16,6 +16,9 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         public string Email { get; private set; }
         [Required]
         public string PasswordHash { get; private set; }
+        //public int Otp {  get; private set; }
+        //public DateTime OtpExpiryTime { get; private set; }
+
         [Required, MaxLength(25)]
         public string Role { get; private set; }
         public string? RefreshToken { get; private set; }
@@ -46,6 +49,12 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         {
             PasswordHash = hash;
         }
+
+        //public void setOtp(int otp)
+        //{ 
+        //    Otp = otp;
+        //    OtpExpiryTime = DateTime.UtcNow.AddMinutes(5);
+        //}
 
         private User() { }
     }
