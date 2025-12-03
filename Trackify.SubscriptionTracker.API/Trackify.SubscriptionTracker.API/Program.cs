@@ -38,6 +38,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddMemoryCache();
+
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
@@ -47,6 +49,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IServiceGetAllAsync, ServiceRepository>();
+builder.Services.AddScoped<IOtpService, OtpService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ISubscriptionGetAll, SubscriptionGetAllRepository>();

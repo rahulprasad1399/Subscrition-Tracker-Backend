@@ -37,7 +37,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.Service", b =>
@@ -65,7 +65,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.Subscription", b =>
@@ -118,7 +118,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("SubscriptionTypeId");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.SubscriptionType", b =>
@@ -141,7 +141,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("SubscriptionTypes");
+                    b.ToTable("SubscriptionTypes", (string)null);
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.User", b =>
@@ -185,7 +185,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("UserNotification", b =>
@@ -225,7 +225,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserNotifications");
+                    b.ToTable("UserNotifications", (string)null);
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.Service", b =>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Application.Notification.Query;
 using Trackify.SubscriptionTracker.Application.Users.Command;
 using Trackify.SubscriptionTracker.Application.Users.Dto;
@@ -108,6 +109,26 @@ namespace Trackify.SubscriptionTracker.API.Controllers
             LogoutCommand command = new();
             var logoutResponse = await _mediator.Send(command);
             return Ok(new { message = logoutResponse });
+        }
+        [HttpPost("send-otp")]
+        public async Task<IActionResult> SendOtp([FromBody]CreateOtpCommand command)
+        {
+            string otp =await _mediator.Send(command);
+            if (otp == null)
+            {
+                return BadRequest(new { message = "OTP generation failed" });
+            }
+
+            Console.WriteLine("OTP sent successfully."+otp);
+
+            return Ok(new { message = "OTP sent successfully. Please check your email."});
+        }
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp(VerifyOtpCommand command)
+        {
+            bool response = await _mediator.Send(command);
+            if (!response) { return BadRequest(new { message = "OTP verification failed" }); }
+            return Ok(new { message = "OTP verfication successfully" });
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
             User user = new User(request.FullName, request.Email, passwordHash: null, role: "Subscriber");
             var hashedPassword = _authRepository.HashPassword(user, request.Password);
 
+
             user.SetPaswordHash(hashedPassword);
 
             await _genericRepository.AddAsync(user);

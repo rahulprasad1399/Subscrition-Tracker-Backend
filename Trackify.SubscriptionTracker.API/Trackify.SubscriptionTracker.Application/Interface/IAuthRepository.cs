@@ -16,6 +16,9 @@ namespace Trackify.SubscriptionTracker.Application.Interface
 
         Task<bool> CheckEmailExistAsync(string email);
         string HashPassword(User user, string password);
+
+        Task<string> GenerateOtp();
+        bool VerifyOtp(string storedOtp, DateTime expiryTime, string userEnteredOtp);
         Task<User> ValidateRefreshTokenAsync(string refreshToken);
     }
 }
