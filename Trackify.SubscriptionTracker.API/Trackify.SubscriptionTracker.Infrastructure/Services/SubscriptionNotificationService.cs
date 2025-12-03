@@ -32,6 +32,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Services
                     ServiceName = subscription.Service.ServiceName,
                     RenewalDate = subscription.RenewalDate,
                     SubscriptionId = subscription.Id,
+                    Subscriptyiontype = subscription.SubscriptionType.TypeName,
                     Title = $"Your subscription for {subscription.Service.ServiceName} is renewing soon",
                     Type = "RenewalReminder"
                 });

@@ -17,7 +17,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
             return await _context.Subscriptions.Where((sub) => !sub.IsSendNotification
                 && sub.RenewalDate.Date <= DateTime.UtcNow.AddDays(2).Date
                 && sub.Status == Subscription.ActiveStatus.Active).Include(x => x.Service)
-                .Include(x=>x.User)
+                .Include(x=>x.User).Include(x=>x.SubscriptionType)
                 .ToListAsync();
         }
         public async Task<int> UpdateSubscriptionsAsync()
