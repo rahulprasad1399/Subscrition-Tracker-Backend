@@ -20,7 +20,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionCommand
         public string BillingPeriodUnit { get; set; }
         public DateTime PurchaseDate { get; set; }
         public DateTime RenewalDate { get; set; }
-        public ActiveStatus ActiveStatus { get; set; }
+        public ActiveStatus Status { get; set; }
 
     }
 
@@ -60,7 +60,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionCommand
 
             Subscription subscription = new Subscription(request.UserId, request.ServiceId,
                 request.SubscriptionTypeId, request.Cost, request.BillingFrequency, request.BillingPeriodUnit,
-                request.PurchaseDate, request.RenewalDate, request.ActiveStatus);
+                request.PurchaseDate, request.RenewalDate, request.Status);
 
             return await _genericRepository.AddAsync(subscription);
         }
@@ -93,7 +93,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionCommand
             RuleFor(x => x)
                 .Must(x => x.RenewalDate > x.PurchaseDate).WithMessage("Renewal date must be greater than purchase date.");
 
-            RuleFor(x => x.ActiveStatus)
+            RuleFor(x => x.Status)
                 .IsInEnum().WithMessage("Invalid active status");
         }
     }

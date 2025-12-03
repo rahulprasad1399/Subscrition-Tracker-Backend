@@ -9,6 +9,7 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionQuery
     public class GetAllSubscriptionQuery : IRequest<SubscriptionResponseDto>
     {
         public int UserId { get; set; }
+        public string? SearchQuery { get; set; }
     }
 
     public class GetAllSubscriptionQueryHandler : IRequestHandler<GetAllSubscriptionQuery, SubscriptionResponseDto>
@@ -22,9 +23,9 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionQuery
 
         public async Task<SubscriptionResponseDto> Handle(GetAllSubscriptionQuery request, CancellationToken cancellationToken)
         {
-            var subscriptions = await _subscriptionGetAll.SubscriptionGetAllAsync(request.UserId);
+            var subscriptions = await _subscriptionGetAll.SubscriptionGetAllAsync(request.UserId, request.SearchQuery);
 
-            var subscriptionGetDtos = subscriptions.Select(subscription => new SubscriptionGetDto
+            var subscriptionGetDtoList = subscriptions.Select(subscription => new SubscriptionGetDto
             {
                 Id = subscription.Id,
                 ServiceId = subscription.ServiceId,
@@ -39,14 +40,16 @@ namespace Trackify.SubscriptionTracker.Application.SubscriptionQuery
 
             return new SubscriptionResponseDto
             {
-                TotalItem = subscriptionGetDtos.Count,
-                ActiveItem = subscriptionGetDtos.Where((sub) => sub.Status == Subscription.ActiveStatus.Active).Count(),
-                MoneySpentMonthly = subscriptionGetDtos
+                TotalItem = subscriptionGetDtoList.Count,
+                ActiveItem = subscriptionGetDtoList.Where((sub) => sub.Status == Subscription.ActiveStatus.Active).Count(),
+                MoneySpentMonthly = subscriptionGetDtoList
                                     .Where(x => x.PurchaseDate.Month == DateTime.UtcNow.Month
                                      && x.PurchaseDate.Year == DateTime.UtcNow.Year)
                                     .Sum(x => x.Cost),
-                UpcomingRenewal = subscriptionGetDtos.Where((x) => x.RenewalDate <= DateTime.UtcNow.AddDays(7).Date).Count(),
-                Subscriptions = subscriptionGetDtos
+                UpcomingRenewal = subscriptionGetDtoList.Where((x) => x.RenewalDate <= DateTime.UtcNow.AddDays(7).Date).Count(),
+                Subscriptions = subscriptionGetDtoList
+                                    .OrderBy(x => x.Status == Subscription.ActiveStatus.Cancelled)
+                                    .ThenBy((x) => x.RenewalDate).ToList()
             };
         }
 

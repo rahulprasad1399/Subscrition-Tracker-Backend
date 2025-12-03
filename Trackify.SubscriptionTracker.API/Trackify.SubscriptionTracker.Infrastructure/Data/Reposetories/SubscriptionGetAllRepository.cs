@@ -17,11 +17,19 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data.Reposetories
             _context = context;
         }
 
-        public async Task<List<Subscription>> SubscriptionGetAllAsync(int UserId)
+        public async Task<List<Subscription>> SubscriptionGetAllAsync(int UserId, string? SearchQuery)
         {
-            return await _context.Subscriptions.Where((sub) => sub.UserId == UserId).Include(x => x.Service)
+            var query = _context.Subscriptions.Where((sub) => sub.UserId == UserId).Include(x => x.Service)
                         .ThenInclude(x => x.Category)
-                        .Include(x => x.SubscriptionType).ToListAsync();
+                        .Include(x => x.SubscriptionType).AsQueryable();
+
+            if(!string.IsNullOrWhiteSpace(SearchQuery))
+            {
+                string lowerQuery = SearchQuery.ToLower();
+                query = query.Where((sub)=>sub.Service.ServiceName.ToLower().Contains(lowerQuery));
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Subscription> SubscriptionGetByIdAsync(int id)

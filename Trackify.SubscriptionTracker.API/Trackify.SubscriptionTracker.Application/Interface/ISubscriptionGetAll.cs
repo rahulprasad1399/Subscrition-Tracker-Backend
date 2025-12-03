@@ -9,7 +9,7 @@ namespace Trackify.SubscriptionTracker.Application.Interface
 {
     public interface ISubscriptionGetAll
     {
-        Task<List<Subscription>> SubscriptionGetAllAsync(int UserId);
+        Task<List<Subscription>> SubscriptionGetAllAsync(int UserId, string? SearchQuery);
         Task<Subscription> SubscriptionGetByIdAsync(int id);
     }
 }

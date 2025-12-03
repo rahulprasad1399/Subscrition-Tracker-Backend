@@ -61,7 +61,7 @@ namespace Trackify.SubscriptionTracker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllSubscription()
+        public async Task<IActionResult> GetAllSubscription([FromQuery]string? searchQuery)
         {
 
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -75,6 +75,7 @@ namespace Trackify.SubscriptionTracker.API.Controllers
                 UserId = int.Parse(userIdString)
             };
 
+            query.SearchQuery = searchQuery;
             SubscriptionResponseDto subscriptions = await _mediator.Send(query);
             return Ok(subscriptions);
         }
