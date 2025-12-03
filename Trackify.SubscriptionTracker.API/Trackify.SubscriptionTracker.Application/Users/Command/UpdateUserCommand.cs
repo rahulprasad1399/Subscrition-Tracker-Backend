@@ -13,6 +13,7 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
         public int Id { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
+        public string? Image {  get; set; }
     }
 
     public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UpdateUser>
@@ -30,14 +31,15 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
                 throw new Exception("User not Found");
             }
 
-            existingUser.UpdateUser(request.FullName, request.Email);
+            existingUser.UpdateUser(request.FullName, request.Email, request.Image);
 
             await _userRepository.UpdateAsync(existingUser);
 
             return new UpdateUser
             {
                 FullName = existingUser.FullName,
-                Email = existingUser.Email
+                Email = existingUser.Email,
+                Image = existingUser.Image
             };
 
         }

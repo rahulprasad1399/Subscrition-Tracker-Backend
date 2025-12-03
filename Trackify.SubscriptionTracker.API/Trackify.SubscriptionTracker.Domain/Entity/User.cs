@@ -14,6 +14,8 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
         public string FullName { get; private set; }
         [EmailAddress, Required, MaxLength(100)]
         public string Email { get; private set; }
+        public string? Image {  get; private set; }
+
         [Required]
         public string PasswordHash { get; private set; }
         //public int Otp {  get; private set; }
@@ -39,10 +41,11 @@ namespace Trackify.SubscriptionTracker.Domain.Entity
             RefreshTokenExpiryTime = refreshTokenExpiryTime;
         }
 
-        public void UpdateUser(string fullName, string email)
+        public void UpdateUser(string fullName, string email, string? image)
         {
             FullName = fullName;
             Email = email;
+            Image = image;
         }
 
         public void SetPaswordHash(string hash)

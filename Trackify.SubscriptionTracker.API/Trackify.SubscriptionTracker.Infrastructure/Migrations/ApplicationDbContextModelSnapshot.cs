@@ -37,7 +37,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.Service", b =>
@@ -65,7 +65,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.Subscription", b =>
@@ -118,7 +118,9 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("SubscriptionTypeId");
 
-                    b.ToTable("Subscriptions", (string)null);
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.SubscriptionType", b =>
@@ -141,7 +143,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("SubscriptionTypes", (string)null);
+                    b.ToTable("SubscriptionTypes");
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.User", b =>
@@ -165,6 +167,9 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -185,7 +190,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("UserNotification", b =>
@@ -225,7 +230,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserNotifications", (string)null);
+                    b.ToTable("UserNotifications");
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.Service", b =>
@@ -259,9 +264,17 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Service");
 
                     b.Navigation("SubscriptionType");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Trackify.SubscriptionTracker.Domain.Entity.SubscriptionType", b =>
@@ -284,7 +297,7 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Migrations
                     b.HasOne("Trackify.SubscriptionTracker.Domain.Entity.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Subscription");

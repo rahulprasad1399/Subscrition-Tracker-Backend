@@ -43,6 +43,27 @@ namespace Trackify.SubscriptionTracker.Infrastructure.Data
                 .HasOne(x => x.User)
                 .WithMany()
                 .HasForeignKey(x => x.CreatedByUserId);
+
+            // Subscription → User (cascade)
+            modelBuilder.Entity<Subscription>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // UserNotification → User (NO CASCADE)
+            modelBuilder.Entity<UserNotification>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            // UserNotification → Subscription (cascade)
+            modelBuilder.Entity<UserNotification>()
+                .HasOne(n => n.Subscription)
+                .WithMany()
+                .HasForeignKey(n => n.SubscriptionId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

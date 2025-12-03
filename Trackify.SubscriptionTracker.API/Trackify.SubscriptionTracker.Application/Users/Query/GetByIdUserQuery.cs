@@ -38,7 +38,8 @@ namespace Trackify.SubscriptionTracker.Application.Users.Query
             {
                 FullName = existingUser.FullName,
                 Email = existingUser.Email,
-                Id = existingUser.Id
+                Id = existingUser.Id,
+                Image = existingUser.Image
             };
         }
     }
