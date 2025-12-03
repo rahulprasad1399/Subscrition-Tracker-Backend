@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Trackify.SubscriptionTracker.Application.Interface;
 
 namespace Trackify.SubscriptionTracker.Application.Users.Command
@@ -17,4 +18,5 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
             return await _otpService.VerifyOtp(request.Email, request.Otp);
         }
     }
+
 }
