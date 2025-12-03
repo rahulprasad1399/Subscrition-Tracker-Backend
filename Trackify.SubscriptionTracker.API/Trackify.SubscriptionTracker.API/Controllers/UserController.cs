@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Application.Notification.Query;
+using Trackify.SubscriptionTracker.Application.SubscriptionQuery;
 using Trackify.SubscriptionTracker.Application.Users.Command;
 using Trackify.SubscriptionTracker.Application.Users.Dto;
 using Trackify.SubscriptionTracker.Application.Users.Query;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Trackify.SubscriptionTracker.API.Controllers
 {
@@ -35,10 +37,17 @@ namespace Trackify.SubscriptionTracker.API.Controllers
             return Ok(loginResponse);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] int id, [FromBody] UpdateUserCommand command)
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserCommand command)
         {
-            command.Id = id;
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not logged in.");
+            }
+
+            command.Id = int.Parse(userIdString);
+
             UpdateUser updatedUser = await _mediator.Send(command);
             return Ok(updatedUser);
         }
@@ -51,12 +60,18 @@ namespace Trackify.SubscriptionTracker.API.Controllers
             return Ok(updateUsers);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByUserId([FromRoute] int id)
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetByUserId()
         {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Unauthorized("User not logged in.");
+            }
+
             GetByIdUserQuery getByIdUserQuery = new()
             {
-                Id = id
+                Id = int.Parse(userIdString)
             };
 
             GetUserDto user = await _mediator.Send(getByIdUserQuery);
@@ -111,17 +126,17 @@ namespace Trackify.SubscriptionTracker.API.Controllers
             return Ok(new { message = logoutResponse });
         }
         [HttpPost("send-otp")]
-        public async Task<IActionResult> SendOtp([FromBody]CreateOtpCommand command)
+        public async Task<IActionResult> SendOtp([FromBody] CreateOtpCommand command)
         {
-            string otp =await _mediator.Send(command);
+            string otp = await _mediator.Send(command);
             if (otp == null)
             {
                 return BadRequest(new { message = "OTP generation failed" });
             }
 
-            Console.WriteLine("OTP sent successfully."+otp);
+            Console.WriteLine("OTP sent successfully." + otp);
 
-            return Ok(new { message = "OTP sent successfully. Please check your email."});
+            return Ok(new { message = "OTP sent successfully. Please check your email." });
         }
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtp(VerifyOtpCommand command)
