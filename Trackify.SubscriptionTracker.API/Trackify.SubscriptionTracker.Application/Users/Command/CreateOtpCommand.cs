@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,8 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
             {
                 return null;
             }
+
+
 
             string subject = "Trackify Verification Code";
            
@@ -88,6 +91,17 @@ namespace Trackify.SubscriptionTracker.Application.Users.Command
             await _emailService.SendEmailAsync(request.Email, subject, htmlContent);
 
             return otp;
+        }
+    }
+
+    public class CreateOtpCommandValidator : AbstractValidator<CreateOtpCommand>
+    {
+        public CreateOtpCommandValidator(IAuthRepository authRepository)
+        {
+            RuleFor(x => x.FullName).NotEmpty().WithMessage("FullName is Required").MaximumLength(100);
+            RuleFor(x => x.Email).NotEmpty().WithMessage("Email is Required")
+                .EmailAddress().WithMessage("Invalid Email Format")
+                .MustAsync(async (email, cancellation) => !await authRepository.CheckEmailExistAsync(email)).WithMessage("Email already in use");
         }
     }
 }
