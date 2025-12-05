@@ -1,11 +1,5 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Application.NotificationDto;
 using Trackify.SubscriptionTracker.Domain.Entity;
