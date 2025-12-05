@@ -1,11 +1,15 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Trackify.SubscriptionTracker.Application.Interface;
+using Trackify.SubscriptionTracker.Application.NotificationDto;
 using Trackify.SubscriptionTracker.Domain.Entity;
+using Trackify.SubscriptionTracker.Infrastructure.Data;
 
 namespace Trackify.SubscriptionTracker.Application.Notification.Command
 {
@@ -30,17 +34,22 @@ namespace Trackify.SubscriptionTracker.Application.Notification.Command
         private readonly IEmailService _emailService;
         private readonly IGenericRepository<User> _userRepository;
         private readonly IGenericRepository<Subscription> _subscriptionRepository;
+        private readonly INotificationSender _notificationSender;
+        private readonly IApplicationDbContext _context;
 
         public NotificationCreateCommandHandler(IGenericRepository<UserNotification> genericRepository,
-            IEmailService emailService, IGenericRepository<Subscription> subscriptionRepository)
+            IEmailService emailService, IGenericRepository<Subscription> subscriptionRepository,
+            INotificationSender notificationSender, IApplicationDbContext context)
         {
             _genericRepository = genericRepository;
             _emailService = emailService;
             _subscriptionRepository = subscriptionRepository;
+            _notificationSender = notificationSender;
+            _context = context;
         }
         public async Task<bool> Handle(NotificationCreateCommand request, CancellationToken cancellationToken)
         {
-            
+
             string Title = "";
             string Message = "";
 
@@ -153,6 +162,29 @@ namespace Trackify.SubscriptionTracker.Application.Notification.Command
 
             await _emailService.SendEmailAsync(request.UserEmail, Title, htmlMessage);
             await _genericRepository.AddAsync(notification, cancellationToken);
+            var notificationId = notification.Id;
+            var savedNotification = await _context.UserNotifications.Include(x => x.Subscription)
+                .ThenInclude(x => x.Service).ThenInclude(x => x.Category)
+                .FirstOrDefaultAsync((notification) => notification.Id == notificationId);
+
+            UserNotificationGetDto newNotification = new UserNotificationGetDto
+            {
+                Id = savedNotification.Id,
+                SubscriptionId = savedNotification.SubscriptionId,
+                Title = savedNotification.Title,
+                Type = savedNotification.Type,
+                IsRead = savedNotification.IsRead,
+                CreatedAt = savedNotification.CreatedAt,
+                UserId = savedNotification.UserId,
+                Cost = savedNotification.Subscription.Cost,
+                PurchaseDate = savedNotification.Subscription.PurchaseDate,
+                RenewalDate = savedNotification.Subscription.RenewalDate,
+                ServiceName = savedNotification.Subscription.Service.ServiceName,
+                CategoryName = savedNotification.Subscription.Service.Category.CategoryName,
+                serviceId = savedNotification.Subscription.Service.Id
+            };
+
+            await _notificationSender.SendNotificationAsync(request.UserId, newNotification);
 
             return true;
         }

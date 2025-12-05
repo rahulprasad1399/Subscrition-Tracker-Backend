@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using Trackify.SubscriptionTracker.APIHub;
 using Trackify.SubscriptionTracker.API.Middlewares;
 using Trackify.SubscriptionTracker.Application.Interface;
 using Trackify.SubscriptionTracker.Domain.Entity;
@@ -61,6 +62,9 @@ builder.Services.AddValidatorsFromAssembly(Assembly.Load("Trackify.SubscriptionT
 // HangFire
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<ISubscriptionNotificationService, SubscriptionNotificationService>();
+
+// SignalR
+builder.Services.AddScoped<INotificationSender, NotficationHubService>();
 
 builder.Services.AddMediatR(x =>
 {
@@ -119,6 +123,10 @@ builder.Services.AddSingleton((provider) =>
 });
 
 
+// SIGNALR
+builder.Services.AddSignalR();
+
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -148,6 +156,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<NotificationHub>("notificationHub");
 
 app.UseHangfireDashboard();
 app.Run();
